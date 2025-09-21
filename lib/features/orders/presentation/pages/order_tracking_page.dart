@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../cubit/order_tracking_cubit.dart';
 import '../cubit/order_tracking_state.dart';
 import '../../domain/models/order_model.dart';
@@ -9,7 +10,9 @@ import '../widgets/order_filter_widget.dart';
 import '../widgets/order_search_widget.dart';
 
 class OrderTrackingPage extends StatefulWidget {
-  const OrderTrackingPage({super.key});
+  final bool shouldGoToHome;
+
+  const OrderTrackingPage({super.key, this.shouldGoToHome = false});
 
   @override
   State<OrderTrackingPage> createState() => _OrderTrackingPageState();
@@ -27,12 +30,14 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const OrderTrackingView();
+    return OrderTrackingView(shouldGoToHome: widget.shouldGoToHome);
   }
 }
 
 class OrderTrackingView extends StatefulWidget {
-  const OrderTrackingView({super.key});
+  final bool shouldGoToHome;
+
+  const OrderTrackingView({super.key, this.shouldGoToHome = false});
 
   @override
   State<OrderTrackingView> createState() => _OrderTrackingViewState();
@@ -56,65 +61,74 @@ class _OrderTrackingViewState extends State<OrderTrackingView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Order Management'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.assignment_outlined), text: 'Active Orders'),
-            Tab(icon: Icon(Icons.history), text: 'Order History'),
-          ],
-        ),
-      ),
-      body: BlocBuilder<OrderTrackingCubit, OrderTrackingState>(
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Search and Filter Section
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    OrderSearchWidget(
-                      onSearchChanged: (query) {
-                        context.read<OrderTrackingCubit>().setSearchQuery(
-                          query,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    OrderFilterWidget(
-                      onFilterChanged: (filter) {
-                        context.read<OrderTrackingCubit>().setFilter(filter);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              // Orders Content
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    // Active Orders Tab
-                    _buildOrdersContent(state, isActiveOrders: true),
-                    // Order History Tab
-                    _buildOrdersContent(state, isActiveOrders: false),
-                  ],
-                ),
-              ),
+    return PopScope(
+      canPop: !widget.shouldGoToHome,
+      onPopInvokedWithResult: (didPop, result) {
+        if (widget.shouldGoToHome && !didPop) {
+          // If we should go to home and the pop was prevented, navigate to home
+          context.go('/');
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Order Management'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(icon: Icon(Icons.assignment_outlined), text: 'Active Orders'),
+              Tab(icon: Icon(Icons.history), text: 'Order History'),
             ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<OrderTrackingCubit>().loadOrders();
-        },
-        tooltip: 'Refresh Orders',
-        child: const Icon(Icons.refresh),
+          ),
+        ),
+        body: BlocBuilder<OrderTrackingCubit, OrderTrackingState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                // Search and Filter Section
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      OrderSearchWidget(
+                        onSearchChanged: (query) {
+                          context.read<OrderTrackingCubit>().setSearchQuery(
+                            query,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      OrderFilterWidget(
+                        onFilterChanged: (filter) {
+                          context.read<OrderTrackingCubit>().setFilter(filter);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                // Orders Content
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // Active Orders Tab
+                      _buildOrdersContent(state, isActiveOrders: true),
+                      // Order History Tab
+                      _buildOrdersContent(state, isActiveOrders: false),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            context.read<OrderTrackingCubit>().loadOrders();
+          },
+          tooltip: 'Refresh Orders',
+          child: const Icon(Icons.refresh),
+        ),
       ),
     );
   }

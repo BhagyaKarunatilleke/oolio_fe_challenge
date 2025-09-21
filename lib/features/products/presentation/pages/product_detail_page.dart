@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../main.dart';
+import 'package:go_router/go_router.dart';
 import '../cubit/product_detail_cubit.dart';
 import '../cubit/product_detail_state.dart';
 import '../widgets/product_customization_widget.dart';
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../../cart/data/models/cart_item_model.dart';
-import '../../../cart/presentation/pages/cart_page.dart';
+import '../../../../core/navigation/app_router.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String productId;
@@ -264,23 +264,27 @@ class ProductDetailView extends StatelessWidget {
 
     context.read<CartCubit>().addItemToCart(cartItem);
 
-    // Show success message
+    // Store router reference before popping to avoid context issues
+    final router = GoRouter.of(context);
+
+    // Show success message with action
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.name} added to cart'),
         action: SnackBarAction(
           label: 'View Cart',
           onPressed: () {
-            // Navigate to cart page using global navigator key
-            navigatorKey.currentState?.push(
-              MaterialPageRoute(builder: (context) => const CartPage()),
-            );
+            // Use the stored router reference to navigate
+            // This avoids the deactivated widget context issue
+            // Use push instead of go to maintain navigation stack
+            router.push(AppRoutes.cart);
           },
         ),
+        duration: const Duration(seconds: 3),
       ),
     );
 
-    // Pop the page immediately
+    // Pop the page automatically as requested
     Navigator.of(context).pop();
   }
 

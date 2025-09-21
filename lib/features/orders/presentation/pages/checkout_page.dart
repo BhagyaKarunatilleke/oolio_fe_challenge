@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../cubit/checkout_cubit.dart';
 import '../cubit/order_state.dart';
 import '../widgets/customer_details_form.dart';
 import '../widgets/payment_selection_widget.dart';
 import '../widgets/order_confirmation_widget.dart';
-import 'order_confirmation_page.dart';
-import '../../../../main.dart';
+import '../../../../core/navigation/app_router.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key});
@@ -36,11 +36,7 @@ class CheckoutView extends StatelessWidget {
             state.whenOrNull(
               completed: (order) {
                 // Navigate to order confirmation page
-                navigatorKey.currentState?.pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => OrderConfirmationPage(order: order),
-                  ),
-                );
+                context.go(AppRoutes.orderConfirmation, extra: order);
               },
               error: (message) {
                 ScaffoldMessenger.of(context).showSnackBar(

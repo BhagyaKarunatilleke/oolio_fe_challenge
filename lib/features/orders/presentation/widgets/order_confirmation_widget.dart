@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/models/order_model.dart';
 import '../../domain/models/order_item_model.dart';
 import '../../domain/models/order_status.dart';
 import '../../../cart/presentation/cubit/cart_cubit.dart';
-import '../../../products/presentation/pages/product_catalog_page.dart';
-import '../pages/order_tracking_page.dart';
+import '../../../../core/navigation/app_router.dart';
 
 class OrderConfirmationWidget extends StatelessWidget {
   final OrderModel order;
@@ -110,13 +110,8 @@ class OrderConfirmationWidget extends StatelessWidget {
                 // Refresh cart state to reflect cleared cart
                 context.read<CartCubit>().loadCart();
 
-                // Navigate back to product catalog
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const ProductCatalogPage(),
-                  ),
-                  (route) => false,
-                );
+                // Navigate back to product catalog using GoRouter
+                context.go(AppRoutes.home);
               },
               icon: const Icon(Icons.shopping_bag_outlined),
               label: const Text('Continue Shopping'),
@@ -133,18 +128,9 @@ class OrderConfirmationWidget extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () {
-                // Replace Order Confirmation with Product Catalog, then navigate to Order Management
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const ProductCatalogPage(),
-                  ),
-                );
-
-                // Then navigate to Order Management
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const OrderTrackingPage(),
-                  ),
+                // Navigate to Order Management with a flag to go to home when back is pressed
+                context.push(
+                  '${AppRoutes.orderTracking}?fromConfirmation=true',
                 );
               },
               icon: const Icon(Icons.track_changes_outlined),
