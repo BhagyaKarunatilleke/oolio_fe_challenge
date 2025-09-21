@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/widgets/product_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/widgets/product_card.dart" afterDir="false" />
     </list>
@@ -102,12 +101,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart</url>
-          <line>265</line>
+          <line>272</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart</url>
-          <line>267</line>
+          <line>274</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

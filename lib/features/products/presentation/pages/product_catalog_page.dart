@@ -8,6 +8,7 @@ import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../../cart/domain/models/cart_item_model.dart';
 import '../../../cart/presentation/widgets/cart_floating_button.dart';
 import '../../../cart/presentation/pages/cart_page.dart';
+import '../pages/product_detail_page.dart';
 
 class ProductCatalogPage extends StatelessWidget {
   const ProductCatalogPage({super.key});
@@ -209,6 +210,9 @@ class ProductCatalogPage extends StatelessWidget {
             onAddToCart: () {
               _addToCart(context, product);
             },
+            onCustomize: () {
+              _navigateToProductDetail(context, product);
+            },
           );
         },
       );
@@ -233,6 +237,9 @@ class ProductCatalogPage extends StatelessWidget {
             },
             onAddToCart: () {
               _addToCart(context, product);
+            },
+            onCustomize: () {
+              _navigateToProductDetail(context, product);
             },
           );
         },
@@ -283,13 +290,9 @@ class ProductCatalogPage extends StatelessWidget {
   }
 
   void _navigateToProductDetail(BuildContext context, product) {
-    // TODO: Navigate to product detail page (Task 2.2.3)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Product detail for ${product.name} - Coming in Task 2.2.3',
-        ),
-        duration: const Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(productId: product.id),
       ),
     );
   }

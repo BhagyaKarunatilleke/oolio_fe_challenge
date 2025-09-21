@@ -6,6 +6,7 @@ class ProductCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isListView;
   final VoidCallback? onAddToCart;
+  final VoidCallback? onCustomize;
 
   const ProductCard({
     super.key,
@@ -13,6 +14,7 @@ class ProductCard extends StatelessWidget {
     this.onTap,
     this.isListView = false,
     this.onAddToCart,
+    this.onCustomize,
   });
 
   @override
@@ -91,23 +93,44 @@ class ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Add to Cart Button
-              if (product.isAvailable &&
-                  product.stockQuantity > 0 &&
-                  onAddToCart != null)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onAddToCart,
-                    icon: const Icon(Icons.add_shopping_cart, size: 16),
-                    label: const Text('Add to Cart'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+              // Action Buttons
+              if (product.isAvailable && product.stockQuantity > 0)
+                Row(
+                  children: [
+                    // Customize Button
+                    if (onCustomize != null)
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: onCustomize,
+                          icon: const Icon(Icons.tune, size: 16),
+                          label: const Text('Customize'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+
+                    // Quick Add Button
+                    if (onAddToCart != null) ...[
+                      if (onCustomize != null) const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: onAddToCart,
+                          icon: const Icon(Icons.add_shopping_cart, size: 16),
+                          label: const Text('Quick Add'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
             ],
           ),
@@ -183,23 +206,51 @@ class ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    // Add to Cart Button
-                    if (product.isAvailable &&
-                        product.stockQuantity > 0 &&
-                        onAddToCart != null)
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: onAddToCart,
-                          icon: const Icon(Icons.add_shopping_cart, size: 16),
-                          label: const Text('Add to Cart'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                    // Action Buttons
+                    if (product.isAvailable && product.stockQuantity > 0)
+                      Row(
+                        children: [
+                          // Customize Button
+                          if (onCustomize != null)
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: onCustomize,
+                                icon: const Icon(Icons.tune, size: 16),
+                                label: const Text('Customize'),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+
+                          // Quick Add Button
+                          if (onAddToCart != null) ...[
+                            if (onCustomize != null) const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: onAddToCart,
+                                icon: const Icon(
+                                  Icons.add_shopping_cart,
+                                  size: 16,
+                                ),
+                                label: const Text('Quick Add'),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                   ],
                 ),

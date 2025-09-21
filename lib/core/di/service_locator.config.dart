@@ -28,6 +28,8 @@ import 'package:oolio_fe_challenge/features/products/domain/repositories/product
     as _i857;
 import 'package:oolio_fe_challenge/features/products/presentation/cubit/product_cubit.dart'
     as _i1040;
+import 'package:oolio_fe_challenge/features/products/presentation/cubit/product_detail_cubit.dart'
+    as _i752;
 import 'package:oolio_fe_challenge/features/sync/presentation/cubit/sync_cubit.dart'
     as _i886;
 
@@ -43,6 +45,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final storageModule = _$StorageModule();
+    gh.factory<_i752.ProductDetailCubit>(() => _i752.ProductDetailCubit());
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
     gh.singleton<_i583.StorageService>(() => storageModule.storageService);
     gh.lazySingleton<_i1014.CartRepository>(
