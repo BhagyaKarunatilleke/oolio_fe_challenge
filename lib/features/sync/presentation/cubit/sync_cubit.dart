@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 import '../../../../core/storage/sync_queue_manager.dart';
 import '../../data/models/sync_queue_item.dart';
 
 part 'sync_state.dart';
 
+@injectable
 class SyncCubit extends Cubit<SyncState> {
-  final SyncQueueManager _syncManager = SyncQueueManager.instance;
+  final SyncQueueManager _syncManager;
   StreamSubscription<SyncQueueEvent>? _eventSubscription;
 
-  SyncCubit() : super(const SyncInitial()) {
+  SyncCubit(this._syncManager) : super(const SyncInitial()) {
     _initialize();
   }
 

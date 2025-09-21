@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:injectable/injectable.dart';
 import '../constants/storage_keys.dart';
 import '../../shared/models/sync_status.dart';
 import '../../features/sync/data/models/sync_operation.dart';
@@ -15,13 +16,11 @@ import '../../features/sync/data/models/sync_queue_item.dart';
 import '../../features/sync/data/models/conflict_resolution.dart';
 import '../../features/sync/data/models/conflict_type.dart';
 import '../../features/sync/data/models/conflict_resolution_strategy.dart';
+import 'storage_service.dart';
 
-class LocalStorageService {
-  static LocalStorageService? _instance;
-  static LocalStorageService get instance =>
-      _instance ??= LocalStorageService._();
-
-  LocalStorageService._();
+@singleton
+class LocalStorageService implements StorageService {
+  LocalStorageService();
 
   late Box<dynamic> _productsBox;
   late Box<dynamic> _ordersBox;
@@ -32,6 +31,7 @@ class LocalStorageService {
 
   bool _isInitialized = false;
 
+  @override
   Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -100,6 +100,7 @@ class LocalStorageService {
   }
 
   // Generic CRUD operations
+  @override
   Future<void> save<T>(String boxName, T entity) async {
     final box = _getBox(boxName);
     // For entities with id field, use it as key
@@ -107,27 +108,32 @@ class LocalStorageService {
     await box.put(id, entity);
   }
 
+  @override
   Future<T?> get<T>(String boxName, String id) async {
     final box = _getBox(boxName);
     return box.get(id) as T?;
   }
 
+  @override
   Future<List<T>> getAll<T>(String boxName) async {
     final box = _getBox(boxName);
     return box.values.cast<T>().toList();
   }
 
+  @override
   Future<void> delete(String boxName, String id) async {
     final box = _getBox(boxName);
     await box.delete(id);
   }
 
+  @override
   Future<void> deleteAll(String boxName) async {
     final box = _getBox(boxName);
     await box.clear();
   }
 
   // Sync-specific operations for entities with syncStatus
+  @override
   Future<List<T>> getPendingSync<T>(String boxName) async {
     final box = _getBox(boxName);
     return box.values
@@ -136,6 +142,7 @@ class LocalStorageService {
         .toList();
   }
 
+  @override
   Future<List<T>> getFailedSync<T>(String boxName) async {
     final box = _getBox(boxName);
     return box.values
@@ -144,6 +151,7 @@ class LocalStorageService {
         .toList();
   }
 
+  @override
   Future<List<T>> getConflictedSync<T>(String boxName) async {
     final box = _getBox(boxName);
     return box.values
@@ -155,6 +163,7 @@ class LocalStorageService {
   }
 
   // Transaction support
+  @override
   Future<void> executeTransaction(List<TransactionOperation> operations) async {
     // For now, we'll execute operations sequentially
     // In a real implementation, you might want to use a proper transaction system
@@ -201,34 +210,42 @@ class LocalStorageService {
   }
 
   // SharedPreferences methods
+  @override
   Future<void> setString(String key, String value) async {
     await _prefs.setString(key, value);
   }
 
+  @override
   String? getString(String key) {
     return _prefs.getString(key);
   }
 
+  @override
   Future<void> setBool(String key, bool value) async {
     await _prefs.setBool(key, value);
   }
 
+  @override
   bool? getBool(String key) {
     return _prefs.getBool(key);
   }
 
+  @override
   Future<void> setInt(String key, int value) async {
     await _prefs.setInt(key, value);
   }
 
+  @override
   int? getInt(String key) {
     return _prefs.getInt(key);
   }
 
+  @override
   Future<void> setDateTime(String key, DateTime value) async {
     await _prefs.setString(key, value.toIso8601String());
   }
 
+  @override
   DateTime? getDateTime(String key) {
     final value = _prefs.getString(key);
     return value != null ? DateTime.parse(value) : null;
@@ -243,19 +260,4 @@ class LocalStorageService {
     await _syncStatusBox.close();
     _isInitialized = false;
   }
-}
-
-// Transaction operation model
-class TransactionOperation {
-  final String entityType;
-  final String entityId;
-  final SyncOperation operation;
-  final Map<String, dynamic> data;
-
-  TransactionOperation({
-    required this.entityType,
-    required this.entityId,
-    required this.operation,
-    required this.data,
-  });
 }

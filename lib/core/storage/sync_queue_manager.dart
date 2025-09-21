@@ -1,19 +1,18 @@
 import 'dart:async';
+import 'package:injectable/injectable.dart';
 import '../constants/app_constants.dart';
 import '../constants/storage_keys.dart';
 import '../errors/exceptions.dart';
-import 'local_storage_service.dart';
+import 'storage_service.dart';
 import '../../features/sync/data/models/sync_queue_item.dart';
 import '../../features/sync/data/models/sync_operation.dart';
 import '../../shared/models/sync_status.dart';
 
+@singleton
 class SyncQueueManager {
-  static SyncQueueManager? _instance;
-  static SyncQueueManager get instance => _instance ??= SyncQueueManager._();
-  
-  SyncQueueManager._();
+  final StorageService _storage;
 
-  final LocalStorageService _storage = LocalStorageService.instance;
+  SyncQueueManager(this._storage);
   Timer? _syncTimer;
   StreamController<SyncQueueEvent>? _eventController;
   bool _isProcessing = false;
@@ -56,12 +55,12 @@ class SyncQueueManager {
   // Process queue operations
   Future<void> _processQueue() async {
     if (_isProcessing) return;
-    
+
     _isProcessing = true;
-    
+
     try {
       final queueItems = await _getSortedQueueItems();
-      
+
       for (final item in queueItems) {
         if (!_isOnline()) {
           break;
@@ -79,8 +78,10 @@ class SyncQueueManager {
   }
 
   Future<List<SyncQueueItem>> _getSortedQueueItems() async {
-    final items = await _storage.getAll<SyncQueueItem>(StorageKeys.syncQueueBox);
-    
+    final items = await _storage.getAll<SyncQueueItem>(
+      StorageKeys.syncQueueBox,
+    );
+
     // Sort by priority (higher first), then by creation time
     items.sort((a, b) {
       final priorityComparison = b.priority.compareTo(a.priority);
@@ -95,25 +96,24 @@ class SyncQueueManager {
     try {
       item.markAsSyncing();
       await _storage.save(StorageKeys.syncQueueBox, item);
-      
+
       _eventController?.add(SyncQueueItemProcessing(item));
 
       // Simulate API call based on operation type
       await _simulateApiCall(item);
-      
+
       // Mark as synced and remove from queue
       item.markAsSynced();
       await _storage.delete(StorageKeys.syncQueueBox, item.id);
-      
+
       _eventController?.add(SyncQueueItemCompleted(item));
-      
     } catch (e) {
       item.setError(e.toString());
       item.incrementRetryCount();
       await _storage.save(StorageKeys.syncQueueBox, item);
-      
+
       _eventController?.add(SyncQueueItemFailed(item, e.toString()));
-      
+
       // Schedule retry
       if (item.shouldRetry(AppConstants.maxRetryAttempts)) {
         _scheduleRetry(item);
@@ -124,7 +124,7 @@ class SyncQueueManager {
   Future<void> _simulateApiCall(SyncQueueItem item) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     // Simulate random failures for testing
     if (DateTime.now().millisecondsSinceEpoch % 10 == 0) {
       throw SyncException('Simulated network error');
@@ -159,7 +159,7 @@ class SyncQueueManager {
 
   // Connectivity simulation
   bool _isOnlineSimulated = true;
-  
+
   bool _isOnline() {
     // In a real app, this would check actual connectivity
     return _isOnlineSimulated;
@@ -167,7 +167,7 @@ class SyncQueueManager {
 
   void setOnlineStatus(bool isOnline) {
     _isOnlineSimulated = isOnline;
-    
+
     if (isOnline) {
       _processQueue();
     }
@@ -185,13 +185,19 @@ class SyncQueueManager {
 
   // Queue statistics
   Future<SyncQueueStats> getQueueStats() async {
-    final items = await _storage.getAll<SyncQueueItem>(StorageKeys.syncQueueBox);
-    
+    final items = await _storage.getAll<SyncQueueItem>(
+      StorageKeys.syncQueueBox,
+    );
+
     return SyncQueueStats(
       totalItems: items.length,
-      pendingItems: items.where((i) => i.syncStatus == SyncStatus.pending).length,
+      pendingItems: items
+          .where((i) => i.syncStatus == SyncStatus.pending)
+          .length,
       failedItems: items.where((i) => i.syncStatus == SyncStatus.failed).length,
-      syncingItems: items.where((i) => i.syncStatus == SyncStatus.syncing).length,
+      syncingItems: items
+          .where((i) => i.syncStatus == SyncStatus.syncing)
+          .length,
     );
   }
 
@@ -223,42 +229,47 @@ abstract class SyncQueueEvent {
 class SyncQueueItemQueued extends SyncQueueEvent {
   final SyncQueueItem item;
   const SyncQueueItemQueued(this.item);
-  
-  static SyncQueueItemQueued itemQueued(SyncQueueItem item) => SyncQueueItemQueued(item);
+
+  static SyncQueueItemQueued itemQueued(SyncQueueItem item) =>
+      SyncQueueItemQueued(item);
 }
 
 class SyncQueueItemProcessing extends SyncQueueEvent {
   final SyncQueueItem item;
   const SyncQueueItemProcessing(this.item);
-  
-  static SyncQueueItemProcessing itemProcessing(SyncQueueItem item) => SyncQueueItemProcessing(item);
+
+  static SyncQueueItemProcessing itemProcessing(SyncQueueItem item) =>
+      SyncQueueItemProcessing(item);
 }
 
 class SyncQueueItemCompleted extends SyncQueueEvent {
   final SyncQueueItem item;
   const SyncQueueItemCompleted(this.item);
-  
-  static SyncQueueItemCompleted itemCompleted(SyncQueueItem item) => SyncQueueItemCompleted(item);
+
+  static SyncQueueItemCompleted itemCompleted(SyncQueueItem item) =>
+      SyncQueueItemCompleted(item);
 }
 
 class SyncQueueItemFailed extends SyncQueueEvent {
   final SyncQueueItem item;
   final String error;
   const SyncQueueItemFailed(this.item, this.error);
-  
-  static SyncQueueItemFailed itemFailed(SyncQueueItem item, String error) => SyncQueueItemFailed(item, error);
+
+  static SyncQueueItemFailed itemFailed(SyncQueueItem item, String error) =>
+      SyncQueueItemFailed(item, error);
 }
 
 class SyncQueueItemRemoved extends SyncQueueEvent {
   final SyncQueueItem item;
   const SyncQueueItemRemoved(this.item);
-  
-  static SyncQueueItemRemoved itemRemoved(SyncQueueItem item) => SyncQueueItemRemoved(item);
+
+  static SyncQueueItemRemoved itemRemoved(SyncQueueItem item) =>
+      SyncQueueItemRemoved(item);
 }
 
 class SyncQueueCleared extends SyncQueueEvent {
   const SyncQueueCleared();
-  
+
   static const SyncQueueCleared queueCleared = SyncQueueCleared();
 }
 

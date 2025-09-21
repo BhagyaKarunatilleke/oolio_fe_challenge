@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../../domain/models/product_model.dart';
 
 part 'product_state.dart';
 
+@injectable
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _repository;
   Timer? _searchDebounceTimer;

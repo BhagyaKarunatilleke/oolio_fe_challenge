@@ -1,12 +1,14 @@
-import '../../../../core/storage/local_storage_service.dart';
+import 'package:injectable/injectable.dart';
+import '../../../../core/storage/storage_service.dart';
 import '../../../../core/constants/storage_keys.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../../domain/models/product_model.dart';
 import '../models/product_variant.dart';
 import '../models/product_addon.dart';
 
+@LazySingleton(as: ProductRepository)
 class ProductRepositoryImpl implements ProductRepository {
-  final LocalStorageService _storage;
+  final StorageService _storage;
 
   ProductRepositoryImpl(this._storage);
 
