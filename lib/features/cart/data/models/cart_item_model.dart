@@ -97,7 +97,7 @@ extension CartItemModelExtension on CartItemModel {
     List<String> variants,
     List<String> addons,
   ) {
-    return productId == productId &&
+    return this.productId == productId &&
         _listEquals(selectedVariants, variants) &&
         _listEquals(selectedAddons, addons);
   }
