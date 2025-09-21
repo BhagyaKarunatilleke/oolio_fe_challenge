@@ -18,10 +18,7 @@ class CartRepositoryImpl implements CartRepository {
       final cartId = _storage.getString(_currentCartKey);
 
       if (cartId != null) {
-        final cart = await _storage.get<CartModel>(
-          StorageKeys.ordersBox,
-          cartId,
-        );
+        final cart = await _storage.get<CartModel>(StorageKeys.cartBox, cartId);
         if (cart != null) {
           return cart;
         }
@@ -91,6 +88,6 @@ class CartRepositoryImpl implements CartRepository {
 
   @override
   Future<void> saveCart(CartModel cart) async {
-    await _storage.save(StorageKeys.ordersBox, cart);
+    await _storage.save(StorageKeys.cartBox, cart);
   }
 }

@@ -4,6 +4,8 @@ import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/products/presentation/cubit/product_detail_cubit.dart';
 import '../../features/sync/presentation/cubit/sync_cubit.dart';
 import '../../features/cart/presentation/cubit/cart_cubit.dart';
+import '../../features/orders/presentation/cubit/order_cubit.dart';
+import '../../features/orders/presentation/cubit/checkout_cubit.dart';
 import 'service_locator.dart';
 
 class AppBlocProvider extends StatelessWidget {
@@ -21,6 +23,8 @@ class AppBlocProvider extends StatelessWidget {
         ),
         BlocProvider<SyncCubit>(create: (context) => get<SyncCubit>()),
         BlocProvider<CartCubit>(create: (context) => get<CartCubit>()),
+        BlocProvider<OrderCubit>(create: (context) => get<OrderCubit>()),
+        BlocProvider<CheckoutCubit>(create: (context) => get<CheckoutCubit>()),
       ],
       child: child,
     );

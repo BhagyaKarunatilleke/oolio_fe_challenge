@@ -22,6 +22,14 @@ import 'package:oolio_fe_challenge/features/cart/domain/repositories/cart_reposi
     as _i1014;
 import 'package:oolio_fe_challenge/features/cart/presentation/cubit/cart_cubit.dart'
     as _i1035;
+import 'package:oolio_fe_challenge/features/orders/data/repositories/order_repository_impl.dart'
+    as _i423;
+import 'package:oolio_fe_challenge/features/orders/domain/repositories/order_repository.dart'
+    as _i47;
+import 'package:oolio_fe_challenge/features/orders/presentation/cubit/checkout_cubit.dart'
+    as _i1064;
+import 'package:oolio_fe_challenge/features/orders/presentation/cubit/order_cubit.dart'
+    as _i864;
 import 'package:oolio_fe_challenge/features/products/data/repositories/product_repository_impl.dart'
     as _i715;
 import 'package:oolio_fe_challenge/features/products/domain/repositories/product_repository.dart'
@@ -48,16 +56,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i752.ProductDetailCubit>(() => _i752.ProductDetailCubit());
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
     gh.singleton<_i583.StorageService>(() => storageModule.storageService);
+    gh.lazySingleton<_i47.OrderRepository>(
+        () => _i423.OrderRepositoryImpl(gh<_i583.StorageService>()));
     gh.lazySingleton<_i1014.CartRepository>(
         () => _i990.CartRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i129.SyncQueueManager>(
         () => _i129.SyncQueueManager(gh<_i583.StorageService>()));
+    gh.factory<_i864.OrderCubit>(
+        () => _i864.OrderCubit(gh<_i47.OrderRepository>()));
     gh.lazySingleton<_i857.ProductRepository>(
         () => _i715.ProductRepositoryImpl(gh<_i583.StorageService>()));
     gh.factory<_i1040.ProductCubit>(
         () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
     gh.factory<_i886.SyncCubit>(
         () => _i886.SyncCubit(gh<_i129.SyncQueueManager>()));
+    gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit(
+          gh<_i47.OrderRepository>(),
+          gh<_i1014.CartRepository>(),
+        ));
     gh.factory<_i1035.CartCubit>(
         () => _i1035.CartCubit(gh<_i1014.CartRepository>()));
     return this;

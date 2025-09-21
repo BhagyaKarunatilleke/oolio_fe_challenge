@@ -26,6 +26,7 @@ class LocalStorageService implements StorageService {
 
   late Box<dynamic> _productsBox;
   late Box<dynamic> _ordersBox;
+  late Box<dynamic> _cartBox;
   late Box<dynamic> _syncQueueBox;
   late Box<dynamic> _conflictsBox;
   late Box<dynamic> _syncStatusBox;
@@ -45,6 +46,7 @@ class LocalStorageService implements StorageService {
     // Open boxes
     _productsBox = await Hive.openBox(StorageKeys.productsBox);
     _ordersBox = await Hive.openBox(StorageKeys.ordersBox);
+    _cartBox = await Hive.openBox(StorageKeys.cartBox);
     _syncQueueBox = await Hive.openBox(StorageKeys.syncQueueBox);
     _conflictsBox = await Hive.openBox(StorageKeys.conflictsBox);
     _syncStatusBox = await Hive.openBox(StorageKeys.syncStatusBox);
@@ -206,6 +208,8 @@ class LocalStorageService implements StorageService {
         return _productsBox;
       case StorageKeys.ordersBox:
         return _ordersBox;
+      case StorageKeys.cartBox:
+        return _cartBox;
       case StorageKeys.syncQueueBox:
         return _syncQueueBox;
       case StorageKeys.conflictsBox:

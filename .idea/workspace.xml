@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d8347835-86ce-4ef1-b751-c64556eb974f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/lib/features/cart/presentation/cubit/cart_cubit.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/cart/presentation/cubit/cart_cubit.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/constants/storage_keys.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/constants/storage_keys.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/cart/data/repositories/cart_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/cart/data/repositories/cart_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/cart/presentation/pages/cart_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/cart/presentation/pages/cart_page.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

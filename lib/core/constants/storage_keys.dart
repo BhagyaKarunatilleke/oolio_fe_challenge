@@ -2,6 +2,7 @@ class StorageKeys {
   // Hive Box Names
   static const String productsBox = 'products';
   static const String ordersBox = 'orders';
+  static const String cartBox = 'cart';
   static const String syncQueueBox = 'sync_queue';
   static const String conflictsBox = 'conflicts';
   static const String transactionsBox = 'transactions';

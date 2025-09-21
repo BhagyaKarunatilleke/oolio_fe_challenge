@@ -4,6 +4,7 @@ import '../cubit/cart_cubit.dart';
 import '../widgets/cart_item_widget.dart';
 import '../widgets/cart_summary_widget.dart';
 import '../../data/models/cart_model.dart';
+import '../../../orders/presentation/pages/checkout_page.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -154,21 +155,9 @@ class CartPage extends StatelessWidget {
   }
 
   void _showCheckoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Checkout'),
-        content: const Text(
-          'Checkout functionality will be implemented in Task 2.2.4: Order Processing.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const CheckoutPage()));
   }
 
   void _showClearCartDialog(BuildContext context) {
