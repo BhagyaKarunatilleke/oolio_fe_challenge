@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/di/service_locator.dart';
-import '../../domain/repositories/order_repository.dart';
-import '../../../cart/domain/repositories/cart_repository.dart';
 import '../cubit/checkout_cubit.dart';
 import '../cubit/order_state.dart';
 import '../widgets/customer_details_form.dart';
@@ -17,9 +14,7 @@ class CheckoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CheckoutCubit(get<OrderRepository>(), get<CartRepository>())
-            ..startCheckout(),
+      create: (context) => CheckoutCubit()..startCheckout(),
       child: const CheckoutView(),
     );
   }

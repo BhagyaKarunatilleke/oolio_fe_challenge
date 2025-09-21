@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/order_tracking_cubit.dart';
 import '../cubit/order_tracking_state.dart';
+import '../../domain/models/order_model.dart';
+import '../../domain/models/order_status.dart';
 import '../widgets/order_list_widget.dart';
 import '../widgets/order_filter_widget.dart';
 import '../widgets/order_search_widget.dart';
@@ -117,6 +119,81 @@ class _OrderTrackingViewState extends State<OrderTrackingView>
     );
   }
 
+  List<OrderModel> _applyFilters(
+    List<OrderModel> allOrders,
+    OrderTrackingFilter currentFilter,
+    String searchQuery,
+    bool isActiveOrders,
+  ) {
+    List<OrderModel> filteredOrders = allOrders;
+
+    // Apply tab-based filtering (Active vs Completed)
+    if (isActiveOrders) {
+      filteredOrders = filteredOrders
+          .where(
+            (order) =>
+                order.status != OrderStatus.completed &&
+                order.status != OrderStatus.cancelled,
+          )
+          .toList();
+    } else {
+      filteredOrders = filteredOrders
+          .where(
+            (order) =>
+                order.status == OrderStatus.completed ||
+                order.status == OrderStatus.cancelled,
+          )
+          .toList();
+    }
+
+    // Apply status filter
+    switch (currentFilter) {
+      case OrderTrackingFilter.all:
+        // No additional filtering needed
+        break;
+      case OrderTrackingFilter.pending:
+        filteredOrders = filteredOrders
+            .where((order) => order.status == OrderStatus.pending)
+            .toList();
+        break;
+      case OrderTrackingFilter.preparing:
+        filteredOrders = filteredOrders
+            .where((order) => order.status == OrderStatus.preparing)
+            .toList();
+        break;
+      case OrderTrackingFilter.ready:
+        filteredOrders = filteredOrders
+            .where((order) => order.status == OrderStatus.ready)
+            .toList();
+        break;
+      case OrderTrackingFilter.completed:
+        filteredOrders = filteredOrders
+            .where((order) => order.status == OrderStatus.completed)
+            .toList();
+        break;
+      case OrderTrackingFilter.cancelled:
+        filteredOrders = filteredOrders
+            .where((order) => order.status == OrderStatus.cancelled)
+            .toList();
+        break;
+    }
+
+    // Apply search filter
+    if (searchQuery.isNotEmpty) {
+      final query = searchQuery.toLowerCase();
+      filteredOrders = filteredOrders.where((order) {
+        return order.orderNumber.toLowerCase().contains(query) ||
+            (order.customerName?.toLowerCase().contains(query) ?? false) ||
+            (order.customerPhone?.contains(query) ?? false);
+      }).toList();
+    }
+
+    // Sort by creation date (newest first)
+    filteredOrders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return filteredOrders;
+  }
+
   Widget _buildOrdersContent(
     OrderTrackingState state, {
     required bool isActiveOrders,
@@ -125,7 +202,14 @@ class _OrderTrackingViewState extends State<OrderTrackingView>
       initial: () => const Center(child: CircularProgressIndicator()),
       loading: () => const Center(child: CircularProgressIndicator()),
       loaded: (activeOrders, completedOrders, currentFilter, searchQuery) {
-        final orders = isActiveOrders ? activeOrders : completedOrders;
+        // Get all orders and apply filtering
+        final allOrders = [...activeOrders, ...completedOrders];
+        final orders = _applyFilters(
+          allOrders,
+          currentFilter,
+          searchQuery,
+          isActiveOrders,
+        );
 
         if (orders.isEmpty) {
           return Center(

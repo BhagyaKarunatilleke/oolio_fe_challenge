@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d8347835-86ce-4ef1-b751-c64556eb974f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/features/orders/data/repositories/order_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/orders/data/repositories/order_repository_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/order_confirmation_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/order_confirmation_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/orders/presentation/pages/order_tracking_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/orders/presentation/pages/order_tracking_page.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -56,6 +56,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final storageModule = _$StorageModule();
     gh.factory<_i752.ProductDetailCubit>(() => _i752.ProductDetailCubit());
+    gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit());
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
     gh.singleton<_i583.StorageService>(() => storageModule.storageService);
     gh.lazySingleton<_i47.OrderRepository>(
@@ -74,10 +75,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
     gh.factory<_i886.SyncCubit>(
         () => _i886.SyncCubit(gh<_i129.SyncQueueManager>()));
-    gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit(
-          gh<_i47.OrderRepository>(),
-          gh<_i1014.CartRepository>(),
-        ));
     gh.factory<_i1035.CartCubit>(
         () => _i1035.CartCubit(gh<_i1014.CartRepository>()));
     return this;

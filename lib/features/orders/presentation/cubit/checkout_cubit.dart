@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../../../cart/domain/repositories/cart_repository.dart';
 import '../../../cart/domain/models/cart_model.dart';
+import '../../../../core/di/service_locator.dart';
 import 'order_state.dart';
 
 @injectable
@@ -10,8 +11,11 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final OrderRepository _orderRepository;
   final CartRepository _cartRepository;
 
-  CheckoutCubit(this._orderRepository, this._cartRepository)
-    : super(const CheckoutState.initial());
+  // Constructor now fetches its own dependencies using get_it
+  CheckoutCubit()
+    : _orderRepository = get<OrderRepository>(),
+      _cartRepository = get<CartRepository>(),
+      super(const CheckoutState.initial());
 
   Future<void> startCheckout() async {
     emit(const CheckoutState.loading());
