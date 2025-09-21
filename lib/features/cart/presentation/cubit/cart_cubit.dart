@@ -11,7 +11,10 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   final CartRepository _repository;
 
-  CartCubit(this._repository) : super(CartInitial());
+  CartCubit(this._repository) : super(CartInitial()) {
+    // Automatically load cart when cubit is initialized
+    loadCart();
+  }
 
   Future<void> loadCart() async {
     emit(CartLoading());
