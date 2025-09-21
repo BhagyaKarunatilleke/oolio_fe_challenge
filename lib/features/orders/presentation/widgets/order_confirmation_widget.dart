@@ -5,6 +5,7 @@ import '../../domain/models/order_item_model.dart';
 import '../../domain/models/order_status.dart';
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../../products/presentation/pages/product_catalog_page.dart';
+import '../pages/order_tracking_page.dart';
 
 class OrderConfirmationWidget extends StatelessWidget {
   final OrderModel order;
@@ -132,12 +133,17 @@ class OrderConfirmationWidget extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () {
-                // Navigate to order tracking (will be implemented in Task 2.2.5)
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Order tracking will be available in Task 2.2.5',
-                    ),
+                // Replace Order Confirmation with Product Catalog, then navigate to Order Management
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const ProductCatalogPage(),
+                  ),
+                );
+
+                // Then navigate to Order Management
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const OrderTrackingPage(),
                   ),
                 );
               },

@@ -9,6 +9,7 @@ import '../../../cart/domain/models/cart_item_model.dart';
 import '../../../cart/presentation/widgets/cart_floating_button.dart';
 import '../../../cart/presentation/pages/cart_page.dart';
 import '../pages/product_detail_page.dart';
+import '../../../orders/presentation/pages/order_tracking_page.dart';
 
 class ProductCatalogPage extends StatelessWidget {
   const ProductCatalogPage({super.key});
@@ -39,6 +40,18 @@ class ProductCatalogPage extends StatelessWidget {
               }
               return const SizedBox.shrink();
             },
+          ),
+          // Order Management Button
+          IconButton(
+            icon: const Icon(Icons.assignment_outlined),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const OrderTrackingPage(),
+                ),
+              );
+            },
+            tooltip: 'Order Management',
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
