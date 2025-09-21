@@ -16,6 +16,8 @@ import '../../features/sync/data/models/sync_queue_item.dart';
 import '../../features/sync/data/models/conflict_resolution.dart';
 import '../../features/sync/data/models/conflict_type.dart';
 import '../../features/sync/data/models/conflict_resolution_strategy.dart';
+import '../../features/cart/data/models/cart_model.dart';
+import '../../features/cart/data/models/cart_item_model.dart';
 import 'storage_service.dart';
 
 @singleton
@@ -96,6 +98,12 @@ class LocalStorageService implements StorageService {
     }
     if (!Hive.isAdapterRegistered(13)) {
       Hive.registerAdapter(ConflictResolutionAdapter());
+    }
+    if (!Hive.isAdapterRegistered(14)) {
+      Hive.registerAdapter(CartItemModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(15)) {
+      Hive.registerAdapter(CartModelAdapter());
     }
   }
 

@@ -16,6 +16,12 @@ import 'package:oolio_fe_challenge/core/storage/local_storage_service.dart'
 import 'package:oolio_fe_challenge/core/storage/storage_service.dart' as _i583;
 import 'package:oolio_fe_challenge/core/storage/sync_queue_manager.dart'
     as _i129;
+import 'package:oolio_fe_challenge/features/cart/data/repositories/cart_repository_impl.dart'
+    as _i990;
+import 'package:oolio_fe_challenge/features/cart/domain/repositories/cart_repository.dart'
+    as _i1014;
+import 'package:oolio_fe_challenge/features/cart/presentation/cubit/cart_cubit.dart'
+    as _i1035;
 import 'package:oolio_fe_challenge/features/products/data/repositories/product_repository_impl.dart'
     as _i715;
 import 'package:oolio_fe_challenge/features/products/domain/repositories/product_repository.dart'
@@ -39,6 +45,8 @@ extension GetItInjectableX on _i174.GetIt {
     final storageModule = _$StorageModule();
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
     gh.singleton<_i583.StorageService>(() => storageModule.storageService);
+    gh.lazySingleton<_i1014.CartRepository>(
+        () => _i990.CartRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i129.SyncQueueManager>(
         () => _i129.SyncQueueManager(gh<_i583.StorageService>()));
     gh.lazySingleton<_i857.ProductRepository>(
@@ -47,6 +55,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
     gh.factory<_i886.SyncCubit>(
         () => _i886.SyncCubit(gh<_i129.SyncQueueManager>()));
+    gh.factory<_i1035.CartCubit>(
+        () => _i1035.CartCubit(gh<_i1014.CartRepository>()));
     return this;
   }
 }

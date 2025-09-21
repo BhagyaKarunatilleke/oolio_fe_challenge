@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/sync/presentation/cubit/sync_cubit.dart';
+import '../../features/cart/presentation/cubit/cart_cubit.dart';
 import 'service_locator.dart';
 
 class AppBlocProvider extends StatelessWidget {
@@ -15,6 +16,7 @@ class AppBlocProvider extends StatelessWidget {
       providers: [
         BlocProvider<ProductCubit>(create: (context) => get<ProductCubit>()),
         BlocProvider<SyncCubit>(create: (context) => get<SyncCubit>()),
+        BlocProvider<CartCubit>(create: (context) => get<CartCubit>()),
       ],
       child: child,
     );

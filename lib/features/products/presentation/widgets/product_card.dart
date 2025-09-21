@@ -5,12 +5,14 @@ class ProductCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback? onTap;
   final bool isListView;
+  final VoidCallback? onAddToCart;
 
   const ProductCard({
     super.key,
     required this.product,
     this.onTap,
     this.isListView = false,
+    this.onAddToCart,
   });
 
   @override
@@ -87,6 +89,26 @@ class ProductCard extends StatelessWidget {
                   _buildStockIndicator(),
                 ],
               ),
+              const SizedBox(height: 8),
+
+              // Add to Cart Button
+              if (product.isAvailable &&
+                  product.stockQuantity > 0 &&
+                  onAddToCart != null)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onAddToCart,
+                    icon: const Icon(Icons.add_shopping_cart, size: 16),
+                    label: const Text('Add to Cart'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -159,6 +181,26 @@ class ProductCard extends StatelessWidget {
                         _buildStockIndicator(),
                       ],
                     ),
+                    const SizedBox(height: 8),
+
+                    // Add to Cart Button
+                    if (product.isAvailable &&
+                        product.stockQuantity > 0 &&
+                        onAddToCart != null)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onAddToCart,
+                          icon: const Icon(Icons.add_shopping_cart, size: 16),
+                          label: const Text('Add to Cart'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

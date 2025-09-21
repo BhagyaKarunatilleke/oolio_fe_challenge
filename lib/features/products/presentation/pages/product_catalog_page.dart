@@ -4,6 +4,10 @@ import '../cubit/product_cubit.dart';
 import '../widgets/product_card.dart';
 import '../widgets/product_search_bar.dart';
 import '../widgets/category_filter.dart';
+import '../../../cart/presentation/cubit/cart_cubit.dart';
+import '../../../cart/domain/models/cart_item_model.dart';
+import '../../../cart/presentation/widgets/cart_floating_button.dart';
+import '../../../cart/presentation/pages/cart_page.dart';
 
 class ProductCatalogPage extends StatelessWidget {
   const ProductCatalogPage({super.key});
@@ -148,6 +152,7 @@ class ProductCatalogPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         },
       ),
+      floatingActionButton: const CartFloatingButton(),
     );
   }
 
@@ -201,6 +206,9 @@ class ProductCatalogPage extends StatelessWidget {
             onTap: () {
               _navigateToProductDetail(context, product);
             },
+            onAddToCart: () {
+              _addToCart(context, product);
+            },
           );
         },
       );
@@ -212,7 +220,7 @@ class ProductCatalogPage extends StatelessWidget {
           crossAxisCount: _getCrossAxisCount(context),
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          mainAxisExtent: 260,
+          mainAxisExtent: 300,
         ),
         itemCount: state.products.length,
         itemBuilder: (context, index) {
@@ -222,6 +230,9 @@ class ProductCatalogPage extends StatelessWidget {
             isListView: false,
             onTap: () {
               _navigateToProductDetail(context, product);
+            },
+            onAddToCart: () {
+              _addToCart(context, product);
             },
           );
         },
@@ -240,6 +251,35 @@ class ProductCatalogPage extends StatelessWidget {
     } else {
       return 2; // Mobile phones
     }
+  }
+
+  void _addToCart(BuildContext context, product) {
+    final cartItem = CartItemModel.create(
+      productId: product.id,
+      productName: product.name,
+      productDescription: product.description,
+      unitPrice: product.price,
+      quantity: 1,
+      imageUrl: product.metadata?['imageUrl'],
+    );
+
+    context.read<CartCubit>().addItemToCart(cartItem);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product.name} added to cart'),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'View Cart',
+          onPressed: () {
+            // Navigate to cart page
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => const CartPage()));
+          },
+        ),
+      ),
+    );
   }
 
   void _navigateToProductDetail(BuildContext context, product) {

@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d8347835-86ce-4ef1-b751-c64556eb974f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/app_bloc_provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/di/service_locator.config.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/storage/local_storage_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/storage/sync_queue_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/storage/sync_queue_manager.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/products/data/repositories/product_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/data/repositories/product_repository_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/cubit/product_cubit.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/cubit/product_cubit.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/sync/presentation/cubit/sync_cubit.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/sync/presentation/cubit/sync_cubit.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/products/presentation/widgets/product_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/products/presentation/widgets/product_card.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,5 +96,21 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
     </layout>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart</url>
+          <line>265</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/features/products/presentation/pages/product_catalog_page.dart</url>
+          <line>267</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
