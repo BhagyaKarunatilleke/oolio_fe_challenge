@@ -161,6 +161,7 @@ class _PaymentSelectionWidgetState extends State<PaymentSelectionWidget> {
                     child: ElevatedButton(
                       onPressed: widget.onProcessOrder,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

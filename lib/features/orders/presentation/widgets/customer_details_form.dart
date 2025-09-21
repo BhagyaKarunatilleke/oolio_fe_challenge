@@ -132,6 +132,7 @@ class _CustomerDetailsFormState extends State<CustomerDetailsForm> {
               child: ElevatedButton(
                 onPressed: _handleProceed,
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

@@ -105,6 +105,7 @@ class CartSummaryWidget extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onCheckout,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
