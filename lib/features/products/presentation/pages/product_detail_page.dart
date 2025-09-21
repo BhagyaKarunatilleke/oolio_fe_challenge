@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../main.dart';
 import '../cubit/product_detail_cubit.dart';
 import '../cubit/product_detail_state.dart';
 import '../widgets/product_customization_widget.dart';
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../../cart/data/models/cart_item_model.dart';
+import '../../../cart/presentation/pages/cart_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String productId;
@@ -269,14 +271,16 @@ class ProductDetailView extends StatelessWidget {
         action: SnackBarAction(
           label: 'View Cart',
           onPressed: () {
-            // Navigate to cart page
-            Navigator.of(context).pushNamed('/cart');
+            // Navigate to cart page using global navigator key
+            navigatorKey.currentState?.push(
+              MaterialPageRoute(builder: (context) => const CartPage()),
+            );
           },
         ),
       ),
     );
 
-    // Navigate back
+    // Pop the page immediately
     Navigator.of(context).pop();
   }
 
