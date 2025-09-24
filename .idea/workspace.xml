@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d8347835-86ce-4ef1-b751-c64556eb974f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/cart/presentation/widgets/cart_summary_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/cart/presentation/widgets/cart_summary_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/customer_details_form.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/customer_details_form.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/payment_selection_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/orders/presentation/widgets/payment_selection_widget.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,7 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../storage/local_storage_service.dart';
 import '../storage/sync_queue_manager.dart';
+import '../../features/printing/data/repositories/print_queue_repository_impl.dart';
+import '../../features/printing/domain/repositories/print_queue_repository.dart';
 import 'service_locator.config.dart';
 
 final GetIt sl = GetIt.instance;
@@ -11,9 +14,21 @@ Future<void> initializeDependencies() async {
   // Configure get_it with injectable
   sl.init();
 
+  // Register SharedPreferences manually
+  final prefs = await SharedPreferences.getInstance();
+  sl.registerSingleton<SharedPreferences>(prefs);
+
+  // Register PrintQueueRepository manually
+  final printRepo = PrintQueueRepositoryImpl();
+  sl.registerSingleton<PrintQueueRepositoryImpl>(printRepo);
+  sl.registerSingleton<PrintQueueRepository>(printRepo);
+
   // Initialize services in correct order
   await sl<LocalStorageService>().initialize();
   await sl<SyncQueueManager>().initialize();
+
+  // Initialize print queue repository
+  await sl<PrintQueueRepositoryImpl>().init();
 }
 
 // Helper methods for easier access
