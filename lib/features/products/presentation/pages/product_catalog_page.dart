@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../cubit/product_cubit.dart';
 import '../widgets/product_card.dart';
 import '../widgets/product_search_bar.dart';
@@ -10,6 +11,7 @@ import '../../../cart/presentation/widgets/cart_floating_button.dart';
 import '../../../cart/presentation/pages/cart_page.dart';
 import '../pages/product_detail_page.dart';
 import '../../../orders/presentation/pages/order_tracking_page.dart';
+import '../../../../core/navigation/app_router.dart';
 
 class ProductCatalogPage extends StatelessWidget {
   const ProductCatalogPage({super.key});
@@ -52,6 +54,14 @@ class ProductCatalogPage extends StatelessWidget {
               );
             },
             tooltip: 'Order Management',
+          ),
+          // Print Queue Button
+          IconButton(
+            icon: const Icon(Icons.print_outlined),
+            onPressed: () {
+              context.push(AppRoutes.printQueue);
+            },
+            tooltip: 'Print Queue',
           ),
           IconButton(
             icon: const Icon(Icons.refresh),

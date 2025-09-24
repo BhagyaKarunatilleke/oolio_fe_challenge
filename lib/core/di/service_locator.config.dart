@@ -75,7 +75,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final storageModule = _$StorageModule();
     gh.factory<_i752.ProductDetailCubit>(() => _i752.ProductDetailCubit());
-    gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit());
     gh.singleton<_i583.StorageService>(() => storageModule.storageService);
     gh.singleton<_i930.NavigationService>(() => _i930.NavigationService());
     gh.singleton<_i836.NavigationErrorHandler>(
@@ -113,6 +112,12 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i1035.CartCubit>(
         () => _i1035.CartCubit(gh<_i1014.CartRepository>()));
+    gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit(
+          gh<_i47.OrderRepository>(),
+          gh<_i1014.CartRepository>(),
+          gh<_i628.PrintService>(),
+          gh<_i775.PrintJobManager>(),
+        ));
     return this;
   }
 }

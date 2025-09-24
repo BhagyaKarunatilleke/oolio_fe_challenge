@@ -6,6 +6,7 @@ import 'print_job.dart';
 import 'print_job_status.dart';
 import 'print_destination.dart';
 import 'print_queue.dart';
+import 'print_job_priority.dart';
 
 @singleton
 class PrintJobManager {
@@ -60,6 +61,38 @@ class PrintJobManager {
 
       if (nextJob != null) {
         await processPrintJob(nextJob);
+      }
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  /// Process all pending jobs in the queue
+  Future<void> processAllPendingJobs() async {
+    if (_isProcessing) return;
+
+    _isProcessing = true;
+    try {
+      final queue = await _repository.getQueue();
+      final pendingJobs = queue.jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => true,
+              processing: () => false,
+              completed: () => false,
+              failed: (errorMessage, failedAt) => false,
+              cancelled: () => false,
+            ),
+          )
+          .toList();
+
+      // Sort by priority (higher priority first)
+      pendingJobs.sort(
+        (a, b) => b.priority.numericValue.compareTo(a.priority.numericValue),
+      );
+
+      for (final job in pendingJobs) {
+        await processPrintJob(job);
       }
     } finally {
       _isProcessing = false;

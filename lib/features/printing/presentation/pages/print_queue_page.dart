@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/navigation/app_router.dart';
 import '../cubit/print_queue_cubit.dart';
 import '../cubit/print_queue_state.dart';
 import '../widgets/print_job_card.dart';
@@ -63,9 +65,17 @@ class PrintQueuePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocProvider(
-        create: (context) => get<PrintQueueCubit>()..loadQueue(),
-        child: const PrintQueueView(),
+      body: PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            // Navigate to home page instead of going back
+            context.go(AppRoutes.home);
+          }
+        },
+        child: BlocProvider(
+          create: (context) => get<PrintQueueCubit>()..loadQueue(),
+          child: const PrintQueueView(),
+        ),
       ),
     );
   }

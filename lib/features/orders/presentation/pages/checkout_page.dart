@@ -7,6 +7,7 @@ import '../widgets/customer_details_form.dart';
 import '../widgets/payment_selection_widget.dart';
 import '../widgets/order_confirmation_widget.dart';
 import '../../../../core/navigation/app_router.dart';
+import '../../../../core/di/service_locator.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key});
@@ -14,7 +15,7 @@ class CheckoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CheckoutCubit()..startCheckout(),
+      create: (context) => get<CheckoutCubit>()..startCheckout(),
       child: const CheckoutView(),
     );
   }

@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../../../cart/domain/repositories/cart_repository.dart';
 import '../../../cart/domain/models/cart_model.dart';
 import '../../../printing/domain/services/print_service.dart';
-import '../../../../core/di/service_locator.dart';
+import '../../../printing/domain/models/print_job_manager.dart';
 import 'order_state.dart';
 
 @injectable
@@ -12,13 +13,14 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final OrderRepository _orderRepository;
   final CartRepository _cartRepository;
   final PrintService _printService;
+  final PrintJobManager _printJobManager;
 
-  // Constructor now fetches its own dependencies using get_it
-  CheckoutCubit()
-    : _orderRepository = get<OrderRepository>(),
-      _cartRepository = get<CartRepository>(),
-      _printService = get<PrintService>(),
-      super(const CheckoutState.initial());
+  CheckoutCubit(
+    this._orderRepository,
+    this._cartRepository,
+    this._printService,
+    this._printJobManager,
+  ) : super(const CheckoutState.initial());
 
   Future<void> startCheckout() async {
     emit(const CheckoutState.loading());
@@ -79,41 +81,51 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   Future<void> processOrder() async {
     state.maybeWhen(
-      paymentSelection:
-          (customerName, customerPhone, specialInstructions) async {
-            emit(const CheckoutState.processing());
-            try {
-              // Get current cart
-              final cart = await _cartRepository.getCurrentCart();
+      paymentSelection: (customerName, customerPhone, specialInstructions) async {
+        emit(const CheckoutState.processing());
+        try {
+          // Get current cart
+          final cart = await _cartRepository.getCurrentCart();
 
-              // Create order from cart
-              final order = await _orderRepository.createOrderFromCart(
-                cart.id,
-                customerName,
-                customerPhone,
-                specialInstructions,
-              );
+          // Create order from cart
+          final order = await _orderRepository.createOrderFromCart(
+            cart.id,
+            customerName,
+            customerPhone,
+            specialInstructions,
+          );
 
-              // Clear the cart after successful order creation
-              await _cartRepository.clearCart();
+          // Clear the cart after successful order creation
+          await _cartRepository.clearCart();
 
-              // Create print job for the order
-              try {
-                await _printService.printOrderReceipt(order: order);
-                // Optionally create kitchen receipt
-                await _printService.printKitchenReceipt(order: order);
-              } catch (e) {
-                // Log print error but don't fail the order
-                print('Failed to create print job: $e');
-              }
+          // Create print jobs for the order (blocking to ensure jobs are added)
+          try {
+            await _printService.printOrderReceipt(order: order);
+          } catch (e) {
+            // Log print error but don't fail the order
+            print('Failed to create print job: $e');
+          }
 
-              emit(CheckoutState.completed(order: order));
-            } catch (e) {
-              emit(
-                CheckoutState.error('Failed to process order: ${e.toString()}'),
-              );
-            }
-          },
+          try {
+            await _printService.printKitchenReceipt(order: order);
+          } catch (e) {
+            // Log print error but don't fail the order
+            print('Failed to create kitchen print job: $e');
+          }
+
+          // Process all pending print jobs (non-blocking)
+          try {
+            unawaited(_printJobManager.processAllPendingJobs());
+          } catch (e) {
+            // Log processing error but don't fail the order
+            print('Failed to process print jobs: $e');
+          }
+
+          emit(CheckoutState.completed(order: order));
+        } catch (e) {
+          emit(CheckoutState.error('Failed to process order: ${e.toString()}'));
+        }
+      },
       orElse: () =>
           emit(const CheckoutState.error('Invalid state for order processing')),
     );
