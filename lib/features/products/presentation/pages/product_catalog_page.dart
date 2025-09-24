@@ -11,7 +11,10 @@ import '../../../cart/presentation/widgets/cart_floating_button.dart';
 import '../../../cart/presentation/pages/cart_page.dart';
 import '../pages/product_detail_page.dart';
 import '../../../orders/presentation/pages/order_tracking_page.dart';
+import '../../../sync/presentation/widgets/sync_status_indicator.dart';
+import '../../../sync/presentation/cubit/sync_cubit.dart';
 import '../../../../core/navigation/app_router.dart';
+import '../../../../core/di/service_locator.dart';
 
 class ProductCatalogPage extends StatelessWidget {
   const ProductCatalogPage({super.key});
@@ -62,6 +65,19 @@ class ProductCatalogPage extends StatelessWidget {
               context.push(AppRoutes.printQueue);
             },
             tooltip: 'Print Queue',
+          ),
+          // Sync Status Indicator
+          BlocProvider(
+            create: (context) => get<SyncCubit>(),
+            child: const CompactSyncStatusIndicator(),
+          ),
+          // Sync Management Button
+          IconButton(
+            icon: const Icon(Icons.sync_alt),
+            onPressed: () {
+              context.push(AppRoutes.syncManagement);
+            },
+            tooltip: 'Sync Management',
           ),
           IconButton(
             icon: const Icon(Icons.refresh),

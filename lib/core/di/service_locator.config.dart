@@ -19,6 +19,8 @@ import 'package:oolio_fe_challenge/core/navigation/navigation_middleware.dart'
     as _i968;
 import 'package:oolio_fe_challenge/core/navigation/navigation_service.dart'
     as _i930;
+import 'package:oolio_fe_challenge/core/services/connectivity_service.dart'
+    as _i333;
 import 'package:oolio_fe_challenge/core/storage/local_storage_service.dart'
     as _i913;
 import 'package:oolio_fe_challenge/core/storage/storage_service.dart' as _i583;
@@ -58,6 +60,8 @@ import 'package:oolio_fe_challenge/features/products/presentation/cubit/product_
     as _i1040;
 import 'package:oolio_fe_challenge/features/products/presentation/cubit/product_detail_cubit.dart'
     as _i752;
+import 'package:oolio_fe_challenge/features/sync/data/services/mock_rest_api_service.dart'
+    as _i66;
 import 'package:oolio_fe_challenge/features/sync/presentation/cubit/sync_cubit.dart'
     as _i886;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -80,6 +84,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i836.NavigationErrorHandler>(
         () => _i836.NavigationErrorHandler());
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
+    gh.singleton<_i333.ConnectivityService>(() => _i333.ConnectivityService());
+    gh.singleton<_i66.MockRestApiService>(() => _i66.MockRestApiService());
     gh.lazySingleton<_i47.OrderRepository>(
         () => _i423.OrderRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i1042.NavigationAnalytics>(
@@ -88,8 +94,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i990.CartRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i891.PrintQueueRepository>(
         () => _i417.PrintQueueRepositoryImpl());
-    gh.singleton<_i129.SyncQueueManager>(
-        () => _i129.SyncQueueManager(gh<_i583.StorageService>()));
     gh.singleton<_i968.NavigationMiddleware>(
         () => _i968.NavigationMiddleware(gh<_i1042.NavigationAnalytics>()));
     gh.factory<_i864.OrderCubit>(
@@ -98,20 +102,27 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i354.OrderTrackingCubit(gh<_i47.OrderRepository>()));
     gh.lazySingleton<_i857.ProductRepository>(
         () => _i715.ProductRepositoryImpl(gh<_i583.StorageService>()));
+    gh.singleton<_i129.SyncQueueManager>(() => _i129.SyncQueueManager(
+          gh<_i583.StorageService>(),
+          gh<_i66.MockRestApiService>(),
+          gh<_i333.ConnectivityService>(),
+        ));
     gh.singleton<_i775.PrintJobManager>(
         () => _i775.PrintJobManager(gh<_i891.PrintQueueRepository>()));
     gh.singleton<_i628.PrintService>(
         () => _i628.PrintService(gh<_i891.PrintQueueRepository>()));
     gh.factory<_i1040.ProductCubit>(
         () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
-    gh.factory<_i886.SyncCubit>(
-        () => _i886.SyncCubit(gh<_i129.SyncQueueManager>()));
     gh.factory<_i1037.PrintQueueCubit>(() => _i1037.PrintQueueCubit(
           gh<_i891.PrintQueueRepository>(),
           gh<_i775.PrintJobManager>(),
         ));
     gh.factory<_i1035.CartCubit>(
         () => _i1035.CartCubit(gh<_i1014.CartRepository>()));
+    gh.factory<_i886.SyncCubit>(() => _i886.SyncCubit(
+          gh<_i129.SyncQueueManager>(),
+          gh<_i333.ConnectivityService>(),
+        ));
     gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit(
           gh<_i47.OrderRepository>(),
           gh<_i1014.CartRepository>(),

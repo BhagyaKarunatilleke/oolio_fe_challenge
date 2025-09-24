@@ -8,6 +8,7 @@ import '../../features/orders/presentation/pages/order_confirmation_page.dart';
 import '../../features/orders/presentation/pages/order_tracking_page.dart';
 import '../../features/orders/domain/models/order_model.dart';
 import '../../features/printing/presentation/pages/print_queue_page.dart';
+import '../../features/sync/presentation/pages/sync_management_page.dart';
 
 /// Centralized navigation routes for the POS system
 class AppRoutes {
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String orderTracking = '/orders';
   static const String orderDetails = '/orders/:id';
   static const String printQueue = '/print-queue';
+  static const String syncManagement = '/sync-management';
 
   /// Helper method to get product detail route
   static String getProductDetailRoute(String productId) =>
@@ -90,6 +92,11 @@ class AppRouter {
         path: AppRoutes.printQueue,
         name: 'print-queue',
         builder: (context, state) => const PrintQueuePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.syncManagement,
+        name: 'sync-management',
+        builder: (context, state) => const SyncManagementPage(),
       ),
     ],
     errorBuilder: (context, state) => _buildErrorPage(context, state.error),

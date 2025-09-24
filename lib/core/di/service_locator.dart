@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../storage/local_storage_service.dart';
 import '../storage/sync_queue_manager.dart';
+import '../services/connectivity_service.dart';
 import '../../features/printing/data/repositories/print_queue_repository_impl.dart';
 import '../../features/printing/domain/repositories/print_queue_repository.dart';
 import 'service_locator.config.dart';
@@ -20,6 +21,7 @@ Future<void> initializeDependencies() async {
 
   // Initialize services in correct order
   await sl<LocalStorageService>().initialize();
+  await sl<ConnectivityService>().initialize();
   await sl<SyncQueueManager>().initialize();
 
   // Initialize print queue repository

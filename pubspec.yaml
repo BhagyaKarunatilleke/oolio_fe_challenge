@@ -61,6 +61,9 @@ dependencies:
   esc_pos_utils_plus: ^2.0.4
   path_provider: ^2.1.0
   
+  # Connectivity
+  connectivity_plus: ^5.0.2
+  
   # UI
   cupertino_icons: ^1.0.8
 

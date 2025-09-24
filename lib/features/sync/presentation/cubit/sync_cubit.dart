@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/storage/sync_queue_manager.dart';
+import '../../../../core/services/connectivity_service.dart';
 import '../../data/models/sync_queue_item.dart';
 
 part 'sync_state.dart';
@@ -10,9 +11,12 @@ part 'sync_state.dart';
 @injectable
 class SyncCubit extends Cubit<SyncState> {
   final SyncQueueManager _syncManager;
+  final ConnectivityService _connectivityService;
   StreamSubscription<SyncQueueEvent>? _eventSubscription;
+  StreamSubscription<bool>? _connectivitySubscription;
 
-  SyncCubit(this._syncManager) : super(const SyncInitial()) {
+  SyncCubit(this._syncManager, this._connectivityService)
+    : super(const SyncInitial()) {
     _initialize();
   }
 
@@ -20,6 +24,16 @@ class SyncCubit extends Cubit<SyncState> {
     _eventSubscription = _syncManager.eventController.stream.listen(
       _handleSyncEvent,
       onError: (error) => emit(SyncError(error.toString())),
+    );
+
+    // Listen for connectivity changes
+    _connectivitySubscription = _connectivityService.connectivityStream.listen(
+      (isConnected) {
+        emit(SyncOnlineStatusChanged(isConnected));
+      },
+      onError: (error) {
+        print('Connectivity stream error: $error');
+      },
     );
   }
 
@@ -50,7 +64,8 @@ class SyncCubit extends Cubit<SyncState> {
   }
 
   Future<void> setOnlineStatus(bool isOnline) async {
-    _syncManager.setOnlineStatus(isOnline);
+    // Real connectivity status is managed by ConnectivityService
+    // This method is kept for compatibility but doesn't actually change connectivity
     emit(SyncOnlineStatusChanged(isOnline));
   }
 
@@ -63,6 +78,13 @@ class SyncCubit extends Cubit<SyncState> {
     }
   }
 
+  @override
+  Future<void> close() {
+    _eventSubscription?.cancel();
+    _connectivitySubscription?.cancel();
+    return super.close();
+  }
+
   Future<void> clearQueue() async {
     try {
       await _syncManager.clearQueue();
@@ -70,11 +92,5 @@ class SyncCubit extends Cubit<SyncState> {
     } catch (e) {
       emit(SyncError(e.toString()));
     }
-  }
-
-  @override
-  Future<void> close() {
-    _eventSubscription?.cancel();
-    return super.close();
   }
 }
