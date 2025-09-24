@@ -1,27 +1,91 @@
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 import 'print_job.dart';
-import 'print_job_status.dart';
 import 'print_job_priority.dart';
+import 'print_job_status.dart';
 
 part 'print_queue.freezed.dart';
 part 'print_queue.g.dart';
 
 @freezed
+@HiveType(typeId: 15)
 class PrintQueue with _$PrintQueue {
-  const factory PrintQueue({
-    @Default([]) List<PrintJob> jobs,
-    @Default(false) bool isProcessing,
-    DateTime? lastProcessedAt,
-  }) = _PrintQueue;
+  const PrintQueue._(); // Private constructor for custom getters/methods
+
+  const factory PrintQueue({@HiveField(0) @Default([]) List<PrintJob> jobs}) =
+      _PrintQueue;
 
   factory PrintQueue.fromJson(Map<String, dynamic> json) =>
       _$PrintQueueFromJson(json);
+
+  /// Get queue statistics
+  PrintQueueStats get stats {
+    return PrintQueueStats(
+      totalJobs: jobs.length,
+      pendingJobs: jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => true,
+              processing: () => false,
+              completed: () => false,
+              failed: (errorMessage, failedAt) => false,
+              cancelled: () => false,
+            ),
+          )
+          .length,
+      processingJobs: jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => false,
+              processing: () => true,
+              completed: () => false,
+              failed: (errorMessage, failedAt) => false,
+              cancelled: () => false,
+            ),
+          )
+          .length,
+      completedJobs: jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => false,
+              processing: () => false,
+              completed: () => true,
+              failed: (errorMessage, failedAt) => false,
+              cancelled: () => false,
+            ),
+          )
+          .length,
+      failedJobs: jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => false,
+              processing: () => false,
+              completed: () => false,
+              failed: (errorMessage, failedAt) => true,
+              cancelled: () => false,
+            ),
+          )
+          .length,
+      cancelledJobs: jobs
+          .where(
+            (job) => job.status.when(
+              pending: () => false,
+              processing: () => false,
+              completed: () => false,
+              failed: (errorMessage, failedAt) => false,
+              cancelled: () => true,
+            ),
+          )
+          .length,
+    );
+  }
 }
 
 extension PrintQueueExtension on PrintQueue {
   /// Add a new job to the queue
   PrintQueue addJob(PrintJob job) {
-    final updatedJobs = List<PrintJob>.from(jobs)..add(job);
+    final updatedJobs = [...jobs, job];
     return copyWith(jobs: _sortJobsByPriority(updatedJobs));
   }
 
@@ -155,38 +219,6 @@ extension PrintQueueExtension on PrintQueue {
     });
 
     return jobsList;
-  }
-
-  /// Get queue statistics
-  PrintQueueStats get stats {
-    return PrintQueueStats(
-      totalJobs: totalJobs,
-      pendingJobs: pendingJobs.length,
-      processingJobs: jobs
-          .where(
-            (job) => job.status.when(
-              pending: () => false,
-              processing: () => true,
-              completed: () => false,
-              failed: (errorMessage, failedAt) => false,
-              cancelled: () => false,
-            ),
-          )
-          .length,
-      completedJobs: completedJobs.length,
-      failedJobs: failedJobsCount,
-      cancelledJobs: jobs
-          .where(
-            (job) => job.status.when(
-              pending: () => false,
-              processing: () => false,
-              completed: () => false,
-              failed: (errorMessage, failedAt) => false,
-              cancelled: () => true,
-            ),
-          )
-          .length,
-    );
   }
 }
 

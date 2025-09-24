@@ -20,9 +20,8 @@ PrintQueue _$PrintQueueFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PrintQueue {
+  @HiveField(0)
   List<PrintJob> get jobs => throw _privateConstructorUsedError;
-  bool get isProcessing => throw _privateConstructorUsedError;
-  DateTime? get lastProcessedAt => throw _privateConstructorUsedError;
 
   /// Serializes this PrintQueue to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,8 +39,7 @@ abstract class $PrintQueueCopyWith<$Res> {
           PrintQueue value, $Res Function(PrintQueue) then) =
       _$PrintQueueCopyWithImpl<$Res, PrintQueue>;
   @useResult
-  $Res call(
-      {List<PrintJob> jobs, bool isProcessing, DateTime? lastProcessedAt});
+  $Res call({@HiveField(0) List<PrintJob> jobs});
 }
 
 /// @nodoc
@@ -60,22 +58,12 @@ class _$PrintQueueCopyWithImpl<$Res, $Val extends PrintQueue>
   @override
   $Res call({
     Object? jobs = null,
-    Object? isProcessing = null,
-    Object? lastProcessedAt = freezed,
   }) {
     return _then(_value.copyWith(
       jobs: null == jobs
           ? _value.jobs
           : jobs // ignore: cast_nullable_to_non_nullable
               as List<PrintJob>,
-      isProcessing: null == isProcessing
-          ? _value.isProcessing
-          : isProcessing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lastProcessedAt: freezed == lastProcessedAt
-          ? _value.lastProcessedAt
-          : lastProcessedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
     ) as $Val);
   }
 }
@@ -88,8 +76,7 @@ abstract class _$$PrintQueueImplCopyWith<$Res>
       __$$PrintQueueImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {List<PrintJob> jobs, bool isProcessing, DateTime? lastProcessedAt});
+  $Res call({@HiveField(0) List<PrintJob> jobs});
 }
 
 /// @nodoc
@@ -106,34 +93,22 @@ class __$$PrintQueueImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? jobs = null,
-    Object? isProcessing = null,
-    Object? lastProcessedAt = freezed,
   }) {
     return _then(_$PrintQueueImpl(
       jobs: null == jobs
           ? _value._jobs
           : jobs // ignore: cast_nullable_to_non_nullable
               as List<PrintJob>,
-      isProcessing: null == isProcessing
-          ? _value.isProcessing
-          : isProcessing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lastProcessedAt: freezed == lastProcessedAt
-          ? _value.lastProcessedAt
-          : lastProcessedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PrintQueueImpl implements _PrintQueue {
-  const _$PrintQueueImpl(
-      {final List<PrintJob> jobs = const [],
-      this.isProcessing = false,
-      this.lastProcessedAt})
-      : _jobs = jobs;
+class _$PrintQueueImpl extends _PrintQueue {
+  const _$PrintQueueImpl({@HiveField(0) final List<PrintJob> jobs = const []})
+      : _jobs = jobs,
+        super._();
 
   factory _$PrintQueueImpl.fromJson(Map<String, dynamic> json) =>
       _$$PrintQueueImplFromJson(json);
@@ -141,6 +116,7 @@ class _$PrintQueueImpl implements _PrintQueue {
   final List<PrintJob> _jobs;
   @override
   @JsonKey()
+  @HiveField(0)
   List<PrintJob> get jobs {
     if (_jobs is EqualUnmodifiableListView) return _jobs;
     // ignore: implicit_dynamic_type
@@ -148,14 +124,8 @@ class _$PrintQueueImpl implements _PrintQueue {
   }
 
   @override
-  @JsonKey()
-  final bool isProcessing;
-  @override
-  final DateTime? lastProcessedAt;
-
-  @override
   String toString() {
-    return 'PrintQueue(jobs: $jobs, isProcessing: $isProcessing, lastProcessedAt: $lastProcessedAt)';
+    return 'PrintQueue(jobs: $jobs)';
   }
 
   @override
@@ -163,20 +133,13 @@ class _$PrintQueueImpl implements _PrintQueue {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PrintQueueImpl &&
-            const DeepCollectionEquality().equals(other._jobs, _jobs) &&
-            (identical(other.isProcessing, isProcessing) ||
-                other.isProcessing == isProcessing) &&
-            (identical(other.lastProcessedAt, lastProcessedAt) ||
-                other.lastProcessedAt == lastProcessedAt));
+            const DeepCollectionEquality().equals(other._jobs, _jobs));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_jobs),
-      isProcessing,
-      lastProcessedAt);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_jobs));
 
   /// Create a copy of PrintQueue
   /// with the given fields replaced by the non-null parameter values.
@@ -194,21 +157,17 @@ class _$PrintQueueImpl implements _PrintQueue {
   }
 }
 
-abstract class _PrintQueue implements PrintQueue {
-  const factory _PrintQueue(
-      {final List<PrintJob> jobs,
-      final bool isProcessing,
-      final DateTime? lastProcessedAt}) = _$PrintQueueImpl;
+abstract class _PrintQueue extends PrintQueue {
+  const factory _PrintQueue({@HiveField(0) final List<PrintJob> jobs}) =
+      _$PrintQueueImpl;
+  const _PrintQueue._() : super._();
 
   factory _PrintQueue.fromJson(Map<String, dynamic> json) =
       _$PrintQueueImpl.fromJson;
 
   @override
+  @HiveField(0)
   List<PrintJob> get jobs;
-  @override
-  bool get isProcessing;
-  @override
-  DateTime? get lastProcessedAt;
 
   /// Create a copy of PrintQueue
   /// with the given fields replaced by the non-null parameter values.

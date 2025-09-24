@@ -101,6 +101,28 @@ class PrintJobManager {
     final readableText = _convertEscPosToText(escPosBytes);
 
     await file.writeAsString(readableText);
+
+    // Log the file location for debugging
+    print('📄 Receipt saved to: ${file.path}');
+    print('📁 Directory: ${receiptsDir.path}');
+    print('🌐 Full path: ${file.absolute.path}');
+  }
+
+  /// Get the file path for a completed print job
+  Future<String?> getReceiptFilePath(String jobId) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final receiptsDir = Directory('${directory.path}/receipts');
+      final file = File('${receiptsDir.path}/receipt_$jobId.txt');
+
+      if (await file.exists()) {
+        return file.path;
+      }
+      return null;
+    } catch (e) {
+      print('Error getting receipt file path: $e');
+      return null;
+    }
   }
 
   /// Print to USB printer (placeholder)

@@ -143,6 +143,26 @@ class OrderConfirmationWidget extends StatelessWidget {
               ),
             ),
           ),
+
+          const SizedBox(height: 12),
+
+          // Print Queue button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                context.push(AppRoutes.printQueue);
+              },
+              icon: const Icon(Icons.print_outlined),
+              label: const Text('View Print Queue'),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

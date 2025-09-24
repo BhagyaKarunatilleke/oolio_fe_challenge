@@ -3,6 +3,44 @@
 part of 'print_queue.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class PrintQueueAdapter extends TypeAdapter<PrintQueue> {
+  @override
+  final int typeId = 15;
+
+  @override
+  PrintQueue read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return PrintQueue(
+      jobs: (fields[0] as List).cast<PrintJob>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, PrintQueue obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.jobs);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrintQueueAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
@@ -12,17 +50,11 @@ _$PrintQueueImpl _$$PrintQueueImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => PrintJob.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      isProcessing: json['isProcessing'] as bool? ?? false,
-      lastProcessedAt: json['lastProcessedAt'] == null
-          ? null
-          : DateTime.parse(json['lastProcessedAt'] as String),
     );
 
 Map<String, dynamic> _$$PrintQueueImplToJson(_$PrintQueueImpl instance) =>
     <String, dynamic>{
       'jobs': instance.jobs,
-      'isProcessing': instance.isProcessing,
-      'lastProcessedAt': instance.lastProcessedAt?.toIso8601String(),
     };
 
 _$PrintQueueStatsImpl _$$PrintQueueStatsImplFromJson(

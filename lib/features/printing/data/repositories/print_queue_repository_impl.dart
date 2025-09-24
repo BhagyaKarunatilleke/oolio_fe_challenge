@@ -5,7 +5,7 @@ import '../../domain/models/print_job.dart';
 import '../../domain/models/print_queue.dart';
 import '../../domain/repositories/print_queue_repository.dart';
 
-@singleton
+@Singleton(as: PrintQueueRepository)
 class PrintQueueRepositoryImpl implements PrintQueueRepository {
   static const String _boxName = 'print_queue';
   late Box<String> _box;

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'print_destination.dart';
@@ -45,7 +46,7 @@ extension PrintJobExtension on PrintJob {
       destination: destination,
       priority: priority,
       status: const PrintJobStatus.pending(),
-      receiptData: receiptData.toJson().toString(),
+      receiptData: jsonEncode(receiptData.toJson()),
       createdAt: DateTime.now(),
     );
   }
@@ -55,9 +56,9 @@ extension PrintJobExtension on PrintJob {
     if (escPosBytes != null) return escPosBytes!;
 
     try {
-      final receiptDataObj = ReceiptData.fromJson(
-        Map<String, dynamic>.from(receiptData as Map),
-      );
+      // Parse the JSON string to Map
+      final Map<String, dynamic> receiptDataMap = jsonDecode(receiptData);
+      final receiptDataObj = ReceiptData.fromJson(receiptDataMap);
       return await receiptDataObj.toEscPosBytes();
     } catch (e) {
       throw Exception('Failed to generate ESC/POS bytes: $e');
@@ -67,9 +68,9 @@ extension PrintJobExtension on PrintJob {
   /// Generate readable text for demo mode
   String generateTextReceipt() {
     try {
-      final receiptDataObj = ReceiptData.fromJson(
-        Map<String, dynamic>.from(receiptData as Map),
-      );
+      // Parse the JSON string to Map
+      final Map<String, dynamic> receiptDataMap = jsonDecode(receiptData);
+      final receiptDataObj = ReceiptData.fromJson(receiptDataMap);
       return receiptDataObj.toText();
     } catch (e) {
       return 'ERROR GENERATING RECEIPT\nError: $e';
@@ -115,9 +116,9 @@ extension PrintJobExtension on PrintJob {
   /// Get display name for the job
   String get displayName {
     try {
-      final receiptDataObj = ReceiptData.fromJson(
-        Map<String, dynamic>.from(receiptData as Map),
-      );
+      // Parse the JSON string to Map
+      final Map<String, dynamic> receiptDataMap = jsonDecode(receiptData);
+      final receiptDataObj = ReceiptData.fromJson(receiptDataMap);
       final orderNumber =
           receiptDataObj.data['order']?['orderNumber'] ?? 'Unknown';
       return 'Order #$orderNumber';

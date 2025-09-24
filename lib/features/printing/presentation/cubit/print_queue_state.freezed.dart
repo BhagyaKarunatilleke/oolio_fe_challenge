@@ -110,8 +110,8 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$InitialImpl implements _Initial {
-  const _$InitialImpl();
+class _$InitialImpl extends _Initial {
+  const _$InitialImpl() : super._();
 
   @override
   String toString() {
@@ -202,8 +202,9 @@ class _$InitialImpl implements _Initial {
   }
 }
 
-abstract class _Initial implements PrintQueueState {
+abstract class _Initial extends PrintQueueState {
   const factory _Initial() = _$InitialImpl;
+  const _Initial._() : super._();
 }
 
 /// @nodoc
@@ -227,8 +228,8 @@ class __$$LoadingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadingImpl implements _Loading {
-  const _$LoadingImpl();
+class _$LoadingImpl extends _Loading {
+  const _$LoadingImpl() : super._();
 
   @override
   String toString() {
@@ -319,8 +320,9 @@ class _$LoadingImpl implements _Loading {
   }
 }
 
-abstract class _Loading implements PrintQueueState {
+abstract class _Loading extends PrintQueueState {
   const factory _Loading() = _$LoadingImpl;
+  const _Loading._() : super._();
 }
 
 /// @nodoc
@@ -375,8 +377,9 @@ class __$$LoadedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl({required this.queue, this.isProcessing = false});
+class _$LoadedImpl extends _Loaded {
+  const _$LoadedImpl({required this.queue, this.isProcessing = false})
+      : super._();
 
   @override
   final PrintQueue queue;
@@ -485,10 +488,11 @@ class _$LoadedImpl implements _Loaded {
   }
 }
 
-abstract class _Loaded implements PrintQueueState {
+abstract class _Loaded extends PrintQueueState {
   const factory _Loaded(
       {required final PrintQueue queue,
       final bool isProcessing}) = _$LoadedImpl;
+  const _Loaded._() : super._();
 
   PrintQueue get queue;
   bool get isProcessing;
@@ -556,8 +560,8 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ErrorImpl implements _Error {
-  const _$ErrorImpl({required this.message, this.queue});
+class _$ErrorImpl extends _Error {
+  const _$ErrorImpl({required this.message, this.queue}) : super._();
 
   @override
   final String message;
@@ -664,9 +668,10 @@ class _$ErrorImpl implements _Error {
   }
 }
 
-abstract class _Error implements PrintQueueState {
+abstract class _Error extends PrintQueueState {
   const factory _Error(
       {required final String message, final PrintQueue? queue}) = _$ErrorImpl;
+  const _Error._() : super._();
 
   String get message;
   PrintQueue? get queue;

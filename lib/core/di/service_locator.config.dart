@@ -46,6 +46,8 @@ import 'package:oolio_fe_challenge/features/printing/domain/models/print_job_man
     as _i775;
 import 'package:oolio_fe_challenge/features/printing/domain/repositories/print_queue_repository.dart'
     as _i891;
+import 'package:oolio_fe_challenge/features/printing/domain/services/print_service.dart'
+    as _i628;
 import 'package:oolio_fe_challenge/features/printing/presentation/cubit/print_queue_cubit.dart'
     as _i1037;
 import 'package:oolio_fe_challenge/features/products/data/repositories/product_repository_impl.dart'
@@ -79,14 +81,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i836.NavigationErrorHandler>(
         () => _i836.NavigationErrorHandler());
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
-    gh.singleton<_i417.PrintQueueRepositoryImpl>(
-        () => _i417.PrintQueueRepositoryImpl());
     gh.lazySingleton<_i47.OrderRepository>(
         () => _i423.OrderRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i1042.NavigationAnalytics>(
         () => _i1042.NavigationAnalytics(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i1014.CartRepository>(
         () => _i990.CartRepositoryImpl(gh<_i583.StorageService>()));
+    gh.singleton<_i891.PrintQueueRepository>(
+        () => _i417.PrintQueueRepositoryImpl());
     gh.singleton<_i129.SyncQueueManager>(
         () => _i129.SyncQueueManager(gh<_i583.StorageService>()));
     gh.singleton<_i968.NavigationMiddleware>(
@@ -99,6 +101,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i715.ProductRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i775.PrintJobManager>(
         () => _i775.PrintJobManager(gh<_i891.PrintQueueRepository>()));
+    gh.singleton<_i628.PrintService>(
+        () => _i628.PrintService(gh<_i891.PrintQueueRepository>()));
     gh.factory<_i1040.ProductCubit>(
         () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
     gh.factory<_i886.SyncCubit>(

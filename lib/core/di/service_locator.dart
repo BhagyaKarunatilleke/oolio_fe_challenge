@@ -11,24 +11,19 @@ final GetIt sl = GetIt.instance;
 
 @InjectableInit()
 Future<void> initializeDependencies() async {
-  // Configure get_it with injectable
-  sl.init();
-
-  // Register SharedPreferences manually
+  // Register SharedPreferences manually BEFORE sl.init()
   final prefs = await SharedPreferences.getInstance();
   sl.registerSingleton<SharedPreferences>(prefs);
 
-  // Register PrintQueueRepository manually
-  final printRepo = PrintQueueRepositoryImpl();
-  sl.registerSingleton<PrintQueueRepositoryImpl>(printRepo);
-  sl.registerSingleton<PrintQueueRepository>(printRepo);
+  // Configure get_it with injectable
+  sl.init();
 
   // Initialize services in correct order
   await sl<LocalStorageService>().initialize();
   await sl<SyncQueueManager>().initialize();
 
   // Initialize print queue repository
-  await sl<PrintQueueRepositoryImpl>().init();
+  await (sl<PrintQueueRepository>() as PrintQueueRepositoryImpl).init();
 }
 
 // Helper methods for easier access
