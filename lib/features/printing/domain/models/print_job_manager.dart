@@ -87,8 +87,29 @@ class PrintJobManager {
 
   /// Print to file (Demo mode)
   Future<void> _printToFile(List<int> escPosBytes, String jobId) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final receiptsDir = Directory('${directory.path}/receipts');
+    Directory? directory;
+
+    // Try to use external storage directory first (Android)
+    if (Platform.isAndroid) {
+      try {
+        // For Android, use external storage directory which is accessible via file manager
+        final externalDir = await getExternalStorageDirectory();
+        if (externalDir != null) {
+          // Use the app's external storage directory - this is accessible via file manager
+          // and doesn't require special permissions for Android 10+
+          directory = externalDir;
+        }
+      } catch (e) {
+        print(
+          'Could not access external storage directory, falling back to app directory: $e',
+        );
+      }
+    }
+
+    // Fallback to app documents directory if external directory is not available
+    directory ??= await getApplicationDocumentsDirectory();
+
+    final receiptsDir = Directory('${directory.path}/Oolio Receipts');
 
     // Create receipts directory if it doesn't exist
     if (!await receiptsDir.exists()) {
@@ -97,22 +118,47 @@ class PrintJobManager {
 
     final file = File('${receiptsDir.path}/receipt_$jobId.txt');
 
-    // Convert ESC/POS bytes to readable text
-    final readableText = _convertEscPosToText(escPosBytes);
-
-    await file.writeAsString(readableText);
+    // Get readable text directly from the print job
+    final job = await _repository.getJob(jobId);
+    if (job != null) {
+      final readableText = await job.generateTextReceipt();
+      await file.writeAsString(readableText);
+    } else {
+      // Fallback: convert ESC/POS bytes to readable text
+      final readableText = _convertEscPosToText(escPosBytes);
+      await file.writeAsString(readableText);
+    }
 
     // Log the file location for debugging
     print('📄 Receipt saved to: ${file.path}');
     print('📁 Directory: ${receiptsDir.path}');
     print('🌐 Full path: ${file.absolute.path}');
+    print('📱 Platform: ${Platform.operatingSystem}');
   }
 
   /// Get the file path for a completed print job
   Future<String?> getReceiptFilePath(String jobId) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final receiptsDir = Directory('${directory.path}/receipts');
+      Directory? directory;
+
+      // Try to use external storage directory first (Android)
+      if (Platform.isAndroid) {
+        try {
+          final externalDir = await getExternalStorageDirectory();
+          if (externalDir != null) {
+            directory = externalDir;
+          }
+        } catch (e) {
+          print(
+            'Could not access external storage directory, falling back to app directory: $e',
+          );
+        }
+      }
+
+      // Fallback to app documents directory if external directory is not available
+      directory ??= await getApplicationDocumentsDirectory();
+
+      final receiptsDir = Directory('${directory.path}/Oolio Receipts');
       final file = File('${receiptsDir.path}/receipt_$jobId.txt');
 
       if (await file.exists()) {

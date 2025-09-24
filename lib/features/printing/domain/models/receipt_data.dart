@@ -90,9 +90,9 @@ extension ReceiptDataExtension on ReceiptData {
       // Items table header
       bytes.addAll(
         generator.row([
-          PosColumn(text: 'ITEM', width: 3, styles: PosStyles(bold: true)),
-          PosColumn(text: 'QTY', width: 1, styles: PosStyles(bold: true)),
-          PosColumn(text: 'PRICE', width: 2, styles: PosStyles(bold: true)),
+          PosColumn(text: 'ITEM', width: 6, styles: PosStyles(bold: true)),
+          PosColumn(text: 'QTY', width: 2, styles: PosStyles(bold: true)),
+          PosColumn(text: 'PRICE', width: 4, styles: PosStyles(bold: true)),
         ]),
       );
 
@@ -103,11 +103,11 @@ extension ReceiptDataExtension on ReceiptData {
           final itemMap = item as Map<String, dynamic>;
           bytes.addAll(
             generator.row([
-              PosColumn(text: itemMap['name'] ?? 'Unknown Item', width: 3),
-              PosColumn(text: '${itemMap['quantity'] ?? 1}', width: 1),
+              PosColumn(text: itemMap['name'] ?? 'Unknown Item', width: 6),
+              PosColumn(text: '${itemMap['quantity'] ?? 1}', width: 2),
               PosColumn(
                 text: '\$${_formatPrice(itemMap['price'] ?? 0.0)}',
-                width: 2,
+                width: 4,
               ),
             ]),
           );
