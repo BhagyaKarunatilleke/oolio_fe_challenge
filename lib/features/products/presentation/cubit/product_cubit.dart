@@ -17,14 +17,50 @@ class ProductCubit extends Cubit<ProductState> {
   Future<void> loadProducts() async {
     emit(ProductLoading());
     try {
-      final products = await _repository.getAllProducts();
+      // Load initial 100 products first for fast display
+      final initialProducts = await _repository.getInitialProducts();
       final categories = await _repository.getCategories();
 
       emit(
-        ProductLoaded(products: products, categories: ['All', ...categories]),
+        ProductLoaded(
+          products: initialProducts,
+          categories: ['All', ...categories],
+          isLoadingMore: true,
+        ),
       );
+
+      // Load remaining products in the background
+      _loadRemainingProductsInBackground();
     } catch (e) {
       emit(ProductError('Failed to load products: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _loadRemainingProductsInBackground() async {
+    try {
+      // Load remaining products without blocking UI
+      await _repository.loadRemainingProducts();
+
+      // Update UI with all products
+      final currentState = state;
+      if (currentState is ProductLoaded) {
+        final allProducts = await _repository.getAllProducts();
+        final categories = await _repository.getCategories();
+
+        emit(
+          ProductLoaded(
+            products: allProducts,
+            categories: ['All', ...categories],
+            isLoadingMore: false,
+          ),
+        );
+      }
+    } catch (e) {
+      // If background loading fails, just update the loading state
+      final currentState = state;
+      if (currentState is ProductLoaded) {
+        emit(currentState.copyWith(isLoadingMore: false));
+      }
     }
   }
 

@@ -76,11 +76,11 @@ class ProductCatalogPage extends StatelessWidget {
         builder: (context, state) {
           if (state is ProductInitial) {
             context.read<ProductCubit>().loadProducts();
-            return const Center(child: CircularProgressIndicator());
+            return _buildInitialLoadingState(context);
           }
 
           if (state is ProductLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildInitialLoadingState(context);
           }
 
           if (state is ProductError) {
@@ -166,7 +166,38 @@ class ProductCatalogPage extends StatelessWidget {
                   Expanded(
                     child: state.products.isEmpty
                         ? _buildEmptyState(context, state)
-                        : _buildProductsList(context, state),
+                        : Column(
+                            children: [
+                              Expanded(
+                                child: _buildProductsList(context, state),
+                              ),
+                              // Loading indicator for background loading
+                              if (state.isLoadingMore)
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Text(
+                                        'Loading more products...',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                   ),
                 ],
               ),
@@ -316,6 +347,31 @@ class ProductCatalogPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ProductDetailPage(productId: product.id),
+      ),
+    );
+  }
+
+  Widget _buildInitialLoadingState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(strokeWidth: 3),
+          const SizedBox(height: 24),
+          Text(
+            'Loading Food Truck Menu...',
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Fetching our delicious offerings',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
+          ),
+        ],
       ),
     );
   }

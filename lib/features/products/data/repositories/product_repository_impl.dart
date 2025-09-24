@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/storage/storage_service.dart';
 import '../../../../core/constants/storage_keys.dart';
@@ -29,6 +31,45 @@ class ProductRepositoryImpl implements ProductRepository {
     } catch (e) {
       // Fallback to mock data if storage fails
       return await _createMockProducts();
+    }
+  }
+
+  /// Load first 100 products immediately for fast initial display
+  Future<List<ProductModel>> getInitialProducts() async {
+    try {
+      // Try to get products from local storage first
+      final localProducts = await _storage.getAll<ProductModel>(
+        StorageKeys.productsBox,
+      );
+
+      if (localProducts.isNotEmpty) {
+        return localProducts.take(100).toList();
+      }
+
+      // If no local products, load first 100 from assets
+      return await _loadInitialProductsFromAssets();
+    } catch (e) {
+      // Fallback to minimal mock data if loading fails
+      return await _createFallbackProducts();
+    }
+  }
+
+  /// Load remaining products in the background
+  Future<void> loadRemainingProducts() async {
+    try {
+      final localProducts = await _storage.getAll<ProductModel>(
+        StorageKeys.productsBox,
+      );
+
+      // If we already have all products, no need to load more
+      if (localProducts.length >= 1000) {
+        return;
+      }
+
+      // Load all products from assets and save to storage
+      await _createMockProducts();
+    } catch (e) {
+      print('Failed to load remaining products: $e');
     }
   }
 
@@ -82,9 +123,97 @@ class ProductRepositoryImpl implements ProductRepository {
         .toList();
   }
 
+  Future<List<ProductModel>> _loadInitialProductsFromAssets() async {
+    try {
+      // Load products from assets
+      final jsonString = await rootBundle.loadString('assets/products.json');
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+
+      // Take only first 100 products for initial load
+      final initialProducts = jsonList.take(100).toList();
+
+      final products = initialProducts.map((json) {
+        return _convertJsonToProduct(json);
+      }).toList();
+
+      // Save initial products to local storage
+      for (final product in products) {
+        await _storage.save(StorageKeys.productsBox, product);
+      }
+
+      return products;
+    } catch (e) {
+      print('Failed to load initial products from assets: $e');
+      return await _createFallbackProducts();
+    }
+  }
+
   Future<List<ProductModel>> _createMockProducts() async {
-    final mockProducts = [
-      // Burgers
+    try {
+      // Load products from assets
+      final jsonString = await rootBundle.loadString('assets/products.json');
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+
+      final products = jsonList.map((json) {
+        return _convertJsonToProduct(json);
+      }).toList();
+
+      // Save all products to local storage
+      for (final product in products) {
+        await _storage.save(StorageKeys.productsBox, product);
+      }
+
+      return products;
+    } catch (e) {
+      // Fallback to a minimal set of products if asset loading fails
+      print('Failed to load products from assets: $e');
+      return await _createFallbackProducts();
+    }
+  }
+
+  ProductModel _convertJsonToProduct(Map<String, dynamic> json) {
+    // Convert variants from JSON
+    final variants = <ProductVariant>[];
+    if (json['variants'] != null) {
+      for (final variantJson in json['variants']) {
+        variants.add(
+          ProductVariant(
+            name: variantJson['name'],
+            priceModifier: variantJson['priceModifier'].toDouble(),
+            isDefault: variantJson['isDefault'] ?? false,
+          ),
+        );
+      }
+    }
+
+    // Convert addons from JSON
+    final addons = <ProductAddon>[];
+    if (json['addons'] != null) {
+      for (final addonJson in json['addons']) {
+        addons.add(
+          ProductAddon(
+            name: addonJson['name'],
+            price: addonJson['price'].toDouble(),
+          ),
+        );
+      }
+    }
+
+    return ProductModel.create(
+      name: json['name'],
+      description: json['description'],
+      price: json['price'].toDouble(),
+      category: json['category'],
+      tags: List<String>.from(json['tags'] ?? []),
+      isAvailable: json['isAvailable'] ?? true,
+      stockQuantity: json['stockQuantity'] ?? 0,
+      variants: variants,
+      addons: addons,
+    );
+  }
+
+  Future<List<ProductModel>> _createFallbackProducts() async {
+    final fallbackProducts = [
       ProductModel.create(
         name: 'Classic Burger',
         description:
@@ -93,102 +222,7 @@ class ProductRepositoryImpl implements ProductRepository {
         category: 'Burgers',
         tags: ['beef', 'classic', 'popular'],
         stockQuantity: 50,
-        variants: [
-          ProductVariant(name: 'Single', priceModifier: 0.0, isDefault: true),
-          ProductVariant(name: 'Double', priceModifier: 4.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Extra Cheese', price: 1.50),
-          ProductAddon(name: 'Bacon', price: 2.50),
-          ProductAddon(name: 'Avocado', price: 2.0),
-        ],
       ),
-
-      ProductModel.create(
-        name: 'Chicken Burger',
-        description:
-            'Grilled chicken breast with crispy lettuce, tomato, and mayo',
-        price: 11.99,
-        category: 'Burgers',
-        tags: ['chicken', 'grilled', 'healthy'],
-        stockQuantity: 30,
-        variants: [
-          ProductVariant(name: 'Regular', priceModifier: 0.0, isDefault: true),
-          ProductVariant(name: 'Spicy', priceModifier: 0.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Extra Chicken', price: 3.0),
-          ProductAddon(name: 'Grilled Onions', price: 1.0),
-        ],
-      ),
-
-      // Sandwiches
-      ProductModel.create(
-        name: 'Turkey Club',
-        description:
-            'Sliced turkey, bacon, lettuce, tomato, and mayo on artisan bread',
-        price: 10.99,
-        category: 'Sandwiches',
-        tags: ['turkey', 'club', 'artisan'],
-        stockQuantity: 25,
-        variants: [
-          ProductVariant(name: 'Half', priceModifier: -2.0, isDefault: true),
-          ProductVariant(name: 'Full', priceModifier: 0.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Extra Turkey', price: 2.50),
-          ProductAddon(name: 'Extra Bacon', price: 2.0),
-        ],
-      ),
-
-      ProductModel.create(
-        name: 'Veggie Wrap',
-        description:
-            'Fresh vegetables, hummus, and sprouts in a whole wheat wrap',
-        price: 9.99,
-        category: 'Sandwiches',
-        tags: ['vegetarian', 'healthy', 'fresh'],
-        stockQuantity: 20,
-        addons: [
-          ProductAddon(name: 'Extra Hummus', price: 1.50),
-          ProductAddon(name: 'Avocado', price: 2.0),
-        ],
-      ),
-
-      // Salads
-      ProductModel.create(
-        name: 'Caesar Salad',
-        description:
-            'Fresh romaine lettuce, croutons, parmesan cheese, and caesar dressing',
-        price: 8.99,
-        category: 'Salads',
-        tags: ['caesar', 'fresh', 'classic'],
-        stockQuantity: 15,
-        variants: [
-          ProductVariant(name: 'Small', priceModifier: -2.0, isDefault: true),
-          ProductVariant(name: 'Large', priceModifier: 2.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Grilled Chicken', price: 4.0),
-          ProductAddon(name: 'Extra Croutons', price: 1.0),
-        ],
-      ),
-
-      ProductModel.create(
-        name: 'Garden Salad',
-        description:
-            'Mixed greens, cherry tomatoes, cucumbers, carrots, and balsamic vinaigrette',
-        price: 7.99,
-        category: 'Salads',
-        tags: ['garden', 'fresh', 'light'],
-        stockQuantity: 12,
-        addons: [
-          ProductAddon(name: 'Grilled Chicken', price: 4.0),
-          ProductAddon(name: 'Feta Cheese', price: 2.0),
-        ],
-      ),
-
-      // Beverages
       ProductModel.create(
         name: 'Fresh Lemonade',
         description: 'Freshly squeezed lemon juice with sparkling water',
@@ -196,71 +230,14 @@ class ProductRepositoryImpl implements ProductRepository {
         category: 'Beverages',
         tags: ['fresh', 'lemonade', 'refreshing'],
         stockQuantity: 40,
-        variants: [
-          ProductVariant(name: 'Regular', priceModifier: 0.0, isDefault: true),
-          ProductVariant(name: 'Large', priceModifier: 1.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Extra Lemon', price: 0.50),
-          ProductAddon(name: 'Mint', price: 0.50),
-        ],
-      ),
-
-      ProductModel.create(
-        name: 'Iced Coffee',
-        description: 'Cold brew coffee with your choice of milk and sweetener',
-        price: 4.99,
-        category: 'Beverages',
-        tags: ['coffee', 'cold brew', 'caffeinated'],
-        stockQuantity: 35,
-        variants: [
-          ProductVariant(name: 'Small', priceModifier: 0.0, isDefault: true),
-          ProductVariant(name: 'Medium', priceModifier: 1.0),
-          ProductVariant(name: 'Large', priceModifier: 2.0),
-        ],
-        addons: [
-          ProductAddon(name: 'Extra Shot', price: 1.0),
-          ProductAddon(name: 'Oat Milk', price: 0.75),
-          ProductAddon(name: 'Vanilla Syrup', price: 0.50),
-        ],
-      ),
-
-      // Desserts
-      ProductModel.create(
-        name: 'Chocolate Brownie',
-        description:
-            'Rich, fudgy chocolate brownie served warm with vanilla ice cream',
-        price: 6.99,
-        category: 'Desserts',
-        tags: ['chocolate', 'brownie', 'warm'],
-        stockQuantity: 20,
-        addons: [
-          ProductAddon(name: 'Extra Ice Cream', price: 1.50),
-          ProductAddon(name: 'Chocolate Sauce', price: 1.0),
-          ProductAddon(name: 'Whipped Cream', price: 0.75),
-        ],
-      ),
-
-      ProductModel.create(
-        name: 'Apple Pie',
-        description:
-            'Homemade apple pie with cinnamon and served with vanilla ice cream',
-        price: 7.99,
-        category: 'Desserts',
-        tags: ['apple', 'pie', 'homemade'],
-        stockQuantity: 15,
-        addons: [
-          ProductAddon(name: 'Extra Ice Cream', price: 1.50),
-          ProductAddon(name: 'Caramel Sauce', price: 1.0),
-        ],
       ),
     ];
 
-    // Save mock products to local storage
-    for (final product in mockProducts) {
+    // Save fallback products to local storage
+    for (final product in fallbackProducts) {
       await _storage.save(StorageKeys.productsBox, product);
     }
 
-    return mockProducts;
+    return fallbackProducts;
   }
 }

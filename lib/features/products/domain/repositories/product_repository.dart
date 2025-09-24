@@ -7,4 +7,8 @@ abstract class ProductRepository {
   Future<List<String>> getCategories();
   Future<ProductModel?> getProductById(String id);
   Future<List<ProductModel>> getAvailableProducts();
+
+  // Progressive loading methods
+  Future<List<ProductModel>> getInitialProducts();
+  Future<void> loadRemainingProducts();
 }

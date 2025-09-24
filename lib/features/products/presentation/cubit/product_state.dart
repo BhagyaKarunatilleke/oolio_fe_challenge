@@ -17,6 +17,7 @@ class ProductLoaded extends ProductState {
   final String selectedCategory;
   final String searchQuery;
   final ProductViewMode viewMode;
+  final bool isLoadingMore;
 
   const ProductLoaded({
     required this.products,
@@ -24,6 +25,7 @@ class ProductLoaded extends ProductState {
     this.selectedCategory = 'All',
     this.searchQuery = '',
     this.viewMode = ProductViewMode.grid,
+    this.isLoadingMore = false,
   });
 
   ProductLoaded copyWith({
@@ -32,6 +34,7 @@ class ProductLoaded extends ProductState {
     String? selectedCategory,
     String? searchQuery,
     ProductViewMode? viewMode,
+    bool? isLoadingMore,
   }) {
     return ProductLoaded(
       products: products ?? this.products,
@@ -39,6 +42,7 @@ class ProductLoaded extends ProductState {
       selectedCategory: selectedCategory ?? this.selectedCategory,
       searchQuery: searchQuery ?? this.searchQuery,
       viewMode: viewMode ?? this.viewMode,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -49,6 +53,7 @@ class ProductLoaded extends ProductState {
     selectedCategory,
     searchQuery,
     viewMode,
+    isLoadingMore,
   ];
 }
 
