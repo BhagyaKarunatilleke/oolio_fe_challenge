@@ -1,5 +1,5 @@
 name: oolio_fe_challenge
-description: "A new Flutter project."
+description: "A modern Point of Sale system for food trucks and mobile food vendors."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -80,6 +80,9 @@ dev_dependencies:
   freezed: ^2.4.6
   json_serializable: ^6.7.1
   injectable_generator: ^2.4.1
+  
+  # App Icons
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -122,3 +125,22 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Flutter Launcher Icons configuration
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app_icon.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/app_icon.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/app_icon.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/app_icon.png"

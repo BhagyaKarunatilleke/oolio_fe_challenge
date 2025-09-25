@@ -2,9 +2,9 @@
     <!-- Note: Using app's external storage directory which doesn't require special permissions -->
     
     <application
-        android:label="oolio_fe_challenge"
+        android:label="@string/app_name"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
