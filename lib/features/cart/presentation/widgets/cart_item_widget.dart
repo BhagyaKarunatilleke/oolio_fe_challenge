@@ -30,18 +30,25 @@ class CartItemWidget extends StatelessWidget {
             // Product Image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                item.imageUrl ?? 'https://via.placeholder.com/60',
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 60,
-                  height: 60,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.broken_image, size: 30),
-                ),
-              ),
+              child: item.imageUrl != null
+                  ? Image.asset(
+                      item.imageUrl!,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 60,
+                        height: 60,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.broken_image, size: 30),
+                      ),
+                    )
+                  : Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.broken_image, size: 30),
+                    ),
             ),
             const SizedBox(width: 12),
 
@@ -88,26 +95,20 @@ class CartItemWidget extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // Price and Quantity Controls
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Price
-                      Text(
-                        '\$${item.totalPrice.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-
-                      // Quantity Controls
-                      _buildQuantityControls(context),
-                    ],
+                  // Price
+                  Text(
+                    '\$${item.totalPrice.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ],
               ),
             ),
+
+            // Quantity Controls
+            _buildQuantityControls(context),
 
             // Remove Button
             IconButton(

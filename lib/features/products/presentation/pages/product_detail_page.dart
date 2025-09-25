@@ -116,17 +116,15 @@ class ProductDetailView extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color: Colors.grey[200],
             ),
-            child: product.metadata?['imageUrl'] != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      product.metadata!['imageUrl'],
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildImagePlaceholder(),
-                    ),
-                  )
-                : _buildImagePlaceholder(),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                context.read<ProductDetailCubit>().getProductImagePath(product),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildImagePlaceholder(),
+              ),
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -259,7 +257,7 @@ class ProductDetailView extends StatelessWidget {
       specialInstructions: specialInstructions.isNotEmpty
           ? specialInstructions
           : null,
-      imageUrl: product.metadata?['imageUrl'],
+      imageUrl: context.read<ProductDetailCubit>().getProductImagePath(product),
     );
 
     context.read<CartCubit>().addItemToCart(cartItem);

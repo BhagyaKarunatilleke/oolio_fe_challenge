@@ -3,14 +3,17 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../domain/models/product_model.dart';
 import '../../domain/repositories/product_repository.dart';
+import '../../../../shared/services/image_service.dart';
 import 'product_detail_state.dart';
 
 @injectable
 class ProductDetailCubit extends Cubit<ProductDetailState> {
   final ProductRepository _repository;
+  final ImageService _imageService;
 
   ProductDetailCubit()
     : _repository = get<ProductRepository>(),
+      _imageService = get<ImageService>(),
       super(const ProductDetailState.initial());
 
   void loadProduct(String productId) async {
@@ -113,6 +116,11 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     if (currentState is ProductDetailLoaded && currentState.quantity > 1) {
       updateQuantity(currentState.quantity - 1);
     }
+  }
+
+  /// Get the image path for a product based on its category
+  String getProductImagePath(ProductModel product) {
+    return _imageService.getCategoryImagePath(product.category);
   }
 
   double _calculateTotalPrice(

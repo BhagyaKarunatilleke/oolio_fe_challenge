@@ -3,6 +3,7 @@ import '../../domain/models/product_model.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
+  final String? imagePath;
   final VoidCallback? onTap;
   final bool isListView;
   final VoidCallback? onAddToCart;
@@ -11,6 +12,7 @@ class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.product,
+    this.imagePath,
     this.onTap,
     this.isListView = false,
     this.onAddToCart,
@@ -39,18 +41,39 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Product Image Placeholder
+              // Product Image
               Container(
-                height: 120,
+                height: 150,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.grey[200],
                 ),
-                child: Icon(
-                  _getCategoryIcon(product.category),
-                  size: 40,
-                  color: Colors.grey[400],
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: imagePath != null
+                      ? Image.asset(
+                          imagePath!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[200],
+                              child: Icon(
+                                _getCategoryIcon(product.category),
+                                size: 40,
+                                color: Colors.grey[400],
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
+                          color: Colors.grey[200],
+                          child: Icon(
+                            _getCategoryIcon(product.category),
+                            size: 40,
+                            color: Colors.grey[400],
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -151,7 +174,7 @@ class ProductCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              // Product Image Placeholder
+              // Product Image
               Container(
                 height: 80,
                 width: 80,
@@ -159,10 +182,31 @@ class ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.grey[200],
                 ),
-                child: Icon(
-                  _getCategoryIcon(product.category),
-                  size: 30,
-                  color: Colors.grey[400],
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: imagePath != null
+                      ? Image.asset(
+                          imagePath!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[200],
+                              child: Icon(
+                                _getCategoryIcon(product.category),
+                                size: 30,
+                                color: Colors.grey[400],
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
+                          color: Colors.grey[200],
+                          child: Icon(
+                            _getCategoryIcon(product.category),
+                            size: 30,
+                            color: Colors.grey[400],
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 12),

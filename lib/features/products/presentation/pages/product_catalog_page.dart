@@ -271,8 +271,10 @@ class ProductCatalogPage extends StatelessWidget {
         itemCount: state.products.length,
         itemBuilder: (context, index) {
           final product = state.products[index];
+          final cubit = context.read<ProductCubit>();
           return ProductCard(
             product: product,
+            imagePath: cubit.getProductImagePath(product),
             isListView: true,
             onTap: () {
               _navigateToProductDetail(context, product);
@@ -294,13 +296,15 @@ class ProductCatalogPage extends StatelessWidget {
           crossAxisCount: _getCrossAxisCount(context),
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          mainAxisExtent: 300,
+          mainAxisExtent: 330,
         ),
         itemCount: state.products.length,
         itemBuilder: (context, index) {
           final product = state.products[index];
+          final cubit = context.read<ProductCubit>();
           return ProductCard(
             product: product,
+            imagePath: cubit.getProductImagePath(product),
             isListView: false,
             onTap: () {
               _navigateToProductDetail(context, product);

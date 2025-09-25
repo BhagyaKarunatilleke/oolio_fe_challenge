@@ -64,6 +64,7 @@ import 'package:oolio_fe_challenge/features/sync/data/services/mock_rest_api_ser
     as _i66;
 import 'package:oolio_fe_challenge/features/sync/presentation/cubit/sync_cubit.dart'
     as _i886;
+import 'package:oolio_fe_challenge/shared/services/image_service.dart' as _i32;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -86,6 +87,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i913.LocalStorageService>(() => _i913.LocalStorageService());
     gh.singleton<_i333.ConnectivityService>(() => _i333.ConnectivityService());
     gh.singleton<_i66.MockRestApiService>(() => _i66.MockRestApiService());
+    gh.singleton<_i32.ImageService>(() => _i32.ImageService());
     gh.lazySingleton<_i47.OrderRepository>(
         () => _i423.OrderRepositoryImpl(gh<_i583.StorageService>()));
     gh.singleton<_i1042.NavigationAnalytics>(
@@ -111,8 +113,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i775.PrintJobManager(gh<_i891.PrintQueueRepository>()));
     gh.singleton<_i628.PrintService>(
         () => _i628.PrintService(gh<_i891.PrintQueueRepository>()));
-    gh.factory<_i1040.ProductCubit>(
-        () => _i1040.ProductCubit(gh<_i857.ProductRepository>()));
     gh.factory<_i1037.PrintQueueCubit>(() => _i1037.PrintQueueCubit(
           gh<_i891.PrintQueueRepository>(),
           gh<_i775.PrintJobManager>(),
@@ -122,6 +122,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i886.SyncCubit>(() => _i886.SyncCubit(
           gh<_i129.SyncQueueManager>(),
           gh<_i333.ConnectivityService>(),
+        ));
+    gh.factory<_i1040.ProductCubit>(() => _i1040.ProductCubit(
+          gh<_i857.ProductRepository>(),
+          gh<_i32.ImageService>(),
         ));
     gh.factory<_i1064.CheckoutCubit>(() => _i1064.CheckoutCubit(
           gh<_i47.OrderRepository>(),

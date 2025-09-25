@@ -4,15 +4,17 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../../domain/models/product_model.dart';
+import '../../../../shared/services/image_service.dart';
 
 part 'product_state.dart';
 
 @injectable
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _repository;
+  final ImageService _imageService;
   Timer? _searchDebounceTimer;
 
-  ProductCubit(this._repository) : super(ProductInitial());
+  ProductCubit(this._repository, this._imageService) : super(ProductInitial());
 
   Future<void> loadProducts() async {
     emit(ProductLoading());
@@ -132,6 +134,11 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> refreshProducts() async {
     await loadProducts();
+  }
+
+  /// Get the image path for a product based on its category
+  String getProductImagePath(ProductModel product) {
+    return _imageService.getCategoryImagePath(product.category);
   }
 
   @override
